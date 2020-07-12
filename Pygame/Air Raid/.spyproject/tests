@@ -1,0 +1,6 @@
+niggers = 10.5656756756756
+
+def text(i):
+    print(f"niggers: {i:.2f}")
+
+text(niggers)

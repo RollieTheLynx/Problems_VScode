@@ -1,3 +1,4 @@
+# https://www.youtube.com/watch?v=3mwFC4SHY-Y&t=3724s
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -5,6 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 db = SQLAlchemy(app)
+
 
 class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -56,4 +58,4 @@ def get_req():
     return "You can only get this page"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

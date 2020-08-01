@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %} {% endblock %}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-64x64.png') }}">
+    <link rel="stylesheet" href = "static/css/main.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/gallery">Gallery</a>
+        <div class="dropdown">
+          <button class="dropbtn">Experiments
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="/library">Static texts</a>
+            <a href="/posts">Database</a>
+            <a href="/regex">Regex</a>
+            <a href="/socials">Social Networks integration</a>
+            <a href="/chuck_norris">API</a>
+            <a href="/parsing">Parsing</a>
+            <a href="/css">CSS</a>
+          </div>
+        </div>
+      </div> 
+    {% block body %} {% endblock %}
+</body>
+</html>

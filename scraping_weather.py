@@ -37,4 +37,5 @@ weather_stuff = pandas.DataFrame(
     "temperatures": temperatures
     })
 
-weather_stuff.to_excel("weather.xlsx")
+print(weather_stuff)
+#weather_stuff.to_excel("weather.xlsx")

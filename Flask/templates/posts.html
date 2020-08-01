@@ -11,13 +11,15 @@
         <form action="/posts" method = "POST">
             Title: <input type = "text" name = "title" id = "title">
             <br>
+            Author: <input type='text' name='author' id='author'>
+            <br>
             Post: <input type = "text" name = "content" id = "content">
             <br>
             <input type = "submit" value = "Post">
             <br>
         
         </form>
-    </hr>
+    <hr>
 
     {% for post in posts%}
         <h2>{{ post.title }}</h2>

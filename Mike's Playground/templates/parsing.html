@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Parsing</title>
+<style>
+    table, th, td {
+      border: 1px solid black;
+      max-width: 800px;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: small;
+      border-collapse: collapse;
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+<h1>Сюда выводятся результаты парсинга <a href="https://forecast.weather.gov/MapClick.php?lat=40.7146&lon=-74.0071#.XyMUXOdn2Uk">погоды в Нью-Йорке</a></h1>
+<br>
+
+<table>
+    <tr>
+      {% for per in period %}
+        <td>{{per}}</td>
+      {% endfor%}
+    </tr>
+    <tr>
+      {% for des in descriptions %}
+        <td>{{des}}</td>
+      {% endfor%}
+    </tr>
+    <tr>
+      {% for temp in temperature %}
+        <td>{{temp}}</td>
+      {% endfor%}
+    </tr>
+  </table> 
+
+{% endblock %}

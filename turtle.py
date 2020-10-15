@@ -2,120 +2,100 @@
 
 import turtle
 
+s = turtle.getscreen()
 t = turtle.Turtle()
 turtle.bgcolor("black")
-turtle.color("blue")
-turtle.left(90)
-turtle.speed(7)
+turtle.title("Graphs turtle")
 
-def draw (l):
-    if l < 1:
-        return
-    else:
-        turtle.forward(l)
-        turtle.left(30)
-        draw(l/2)
-        turtle.right(60)
-        draw(l/2)
-        turtle.left(30)
-        turtle.backward(l)
-draw(100)
-turtle.mainloop()
+def resetturtle(x,y):
+    t.reset()
+    t.shapesize(2,2,2)
+    t.fillcolor("red")
+    t.pensize(1)
+    t.pencolor("green")
+    t.speed(0)
+    t.penup()
+    t.hideturtle
+    t.setposition(x,y)
+    t.pendown()
+    t.showturtle
+    t.speed(10)
 
 #%%
+resetturtle(-450, 0)
+xspeed = 1
+yspeed = 6
+ych = 0.1
 
-import turtle
-turtle.color('red', 'yellow')
-turtle.begin_fill()
-while True:
-    turtle.forward(200)
-    turtle.left(170)
-    if abs(turtle.pos()) < 1:
-        break
-turtle.end_fill()
-turtle.done()
-turtle.mainloop()
+for i in range(0,1000):
+    t.goto(t.pos()[0] + xspeed, t.pos()[1] + yspeed)
+    yspeed += ych
+    if yspeed >= 6:
+        ych = -0.1
+    if yspeed <= -6:
+        ych = 0.1
+#%%
+colors = ["white","pink","green","grey","yellow","red","purple","cyan","magenta", "lime", "salmon", "honeydew", "chocolate", "teal", "maroon", "darkslategray","indigo","deepskyblue"]
+resetturtle(0,0)
+
+for color in colors:
+    t.pencolor(color)
+    t.circle(100)
+    t.left (20)
+    
+#%%
+resetturtle(-500, 0)
+
+for x in range(-500,-1):
+    y = 500/x
+    t.goto(x,y)
+    
+for x in range(1,500):
+    y = 500/x
+    t.goto(x,y)
+    
+#%%
+
+resetturtle(0, 0)  
+
+# turning the turtle to face upwards 
+t.rt(-90) 
+  
+# the acute angle between the base and branch of the Y 
+angle = 30
+  
+# function to plot a Y 
+def y(sz, level):    
+  
+    if level > 0: 
+        turtle.colormode(255) 
+          
+        # splitting the rgb range for green into equal intervals for each level
+        # setting the colour according to the current level 
+        t.pencolor(0, 255//level, 0) 
+          
+        # drawing the base 
+        t.fd(sz) 
+  
+        t.rt(angle) 
+  
+        # recursive call for the right subtree 
+        y(0.8 * sz, level-1) 
+          
+        t.pencolor(0, 255//level, 0) 
+          
+        t.lt( 2 * angle ) 
+  
+        # recursive call for the left subtree 
+        y(0.8 * sz, level-1) 
+          
+        t.pencolor(0, 255//level, 0) 
+          
+        t.rt(angle) 
+        t.fd(-sz) 
+           
+# tree of size 80 and level 7 
+y(80, 10) 
 
 #%%
-import turtle
-
-turtle.bgcolor("black")
-turtle.pensize(2)
-turtle.speed(1)
-
-for i in range(6):
-    for colours in ["red", "magenta", "blue", "green", "yellow", "white"]:
-        turtle.color(colours)
-        turtle.circle(100)
-        turtle.left(10)
-        
-    turtle.hideturtle()
-
-turtle.mainloop()
-
-#%%
-from turtle import Turtle, Screen
-
-pg = Screen()
-pg.screensize(500, 500)
-pg.title("Turtle Keys")
-
-run = Turtle("turtle")
-run.speed("fastest")
-run.color("blue")
-run.penup()
-run.setposition(250, 250)
-
-follow = Turtle("turtle")
-follow.speed("fastest")
-follow.color("red")
-follow.penup()
-follow.setposition(-250, -250)
-
-def k1():
-    run.forward(10)
-
-def k2():
-    run.left(45)
-
-def k3():
-    run.right(45)
-
-def k4():
-    run.backward(10)
-
-def quitThis():
-    pg.bye()
-
-def follow_runner():
-    follow.setheading(follow.towards(run))
-    follow.forward(1)
-    pg.ontimer(follow_runner, 10)
-
-pg.onkey(k1, "Up")  # the up arrow key
-pg.onkey(k2, "Left")  # the left arrow key
-pg.onkey(k3, "Right")  # you get it!
-pg.onkey(k4, "Down")
-pg.onkey(quitThis, 'q')
-
-pg.listen()
-
-follow_runner()
-
-pg.mainloop()
-
-#%%
-import turtle
-planet = turtle.Turtle()
-planet.speed(1)
-planet.color("blue")
-planet.setposition(0,-300)
-
-moon = turtle.Turtle()
-moon.speed(0)
-moon.color("green")
-moon.setposition(0,-290)
-planet.circle(300)
-moon.circle(10)
-
-turtle.mainloop()
+s.mainloop()

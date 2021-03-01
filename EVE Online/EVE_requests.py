@@ -107,7 +107,14 @@ def market_orders(region_id):
     #df = df[df.price_max != df.price_min]
     print(df.head(5))
     df.to_excel("EVE Online\\output.xlsx")
-    #print(df.groupby(['type_name'], sort=False)['price'].max())
+
+    '''
+    !!!!
+    df["profit"] = ["yes" if ele  == "BULL" else "Short" for ele in df["A"]]
+    https://stackoverflow.com/questions/30953299/pandas-if-row-in-column-a-contains-x-write-y-to-row-in-column-b
+    '''
+
+
 
 
     # для каждого уникального ИД найти минимальный заказ на продажу с минимальной ценой и заказ на  покупку с максимальной ценой и посчитать прибыль

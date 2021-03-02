@@ -75,6 +75,7 @@ char_info(94881232)
 #%%
 # https://www.adam4eve.eu/info_locations.php
 # lonetrek 10000016
+# Aridia 10000054
 # /markets/{region_id}/orders/
 
 def market_orders(region_id):
@@ -97,29 +98,36 @@ def market_orders(region_id):
         additional = make_call(page)
         df = df.append(additional)
     
-    #pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_columns', None)
+    df.reset_index(inplace=True)
     df['type_name'] = df['type_id'].map(id_dict)
     df['system_name'] = df['system_id'].map(solar_dict)
     df['location_name'] = df['location_id'].map(npc_stations_dict)
     df['price_max'] = df.groupby(['type_name'])['price'].transform(max)
     df['price_min'] = df.groupby(['type_name'])['price'].transform(min)
-    #df = df.is_buy_order == 'true'
-    #df = df[df.price_max != df.price_min]
-    print(df.head(5))
+    df["status"] = ["buy order" if ele  == "True" else "sell order" for ele in df["is_buy_order"]]
+    # https://stackoverflow.com/questions/30953299/pandas-if-row-in-column-a-contains-x-write-y-to-row-in-column-b
     df.to_excel("EVE Online\\output.xlsx")
-
-    '''
-    !!!!
-    df["profit"] = ["yes" if ele  == "BULL" else "Short" for ele in df["A"]]
-    https://stackoverflow.com/questions/30953299/pandas-if-row-in-column-a-contains-x-write-y-to-row-in-column-b
-    '''
+    return df
 
 
-
-
-    # для каждого уникального ИД найти минимальный заказ на продажу с минимальной ценой и заказ на  покупку с максимальной ценой и посчитать прибыль
+    # для каждого уникального ИД найти заказ на продажу с минимальной ценой и заказ на  покупку с максимальной ценой и посчитать прибыль
     # resulting_df = df['type_name'].copy().drop_duplicates()
     # https://stackoverflow.com/questions/15741759/find-maximum-value-of-a-column-and-return-the-corresponding-row-values-using-pan
     # # print(resulting_df.head(5))
 
-market_orders(10000054)
+df = market_orders(10000054)
+
+#df2 = df['type_name'].copy().drop_duplicates().to_frame() # unique goods
+
+
+
+# lab3 In [29]
+df_gptest = df[['type_name','is_buy_order','price']]
+grouped_test1 = df_gptest.groupby(['type_name','is_buy_order'],as_index=False).max()
+grouped_test1
+grouped_test1.to_excel("EVE Online\\grouped.xlsx")
+
+grouped_pivot = grouped_test1.pivot(index='type_name',columns='is_buy_order')
+grouped_pivot
+grouped_pivot.to_excel("EVE Online\\pivot.xlsx")

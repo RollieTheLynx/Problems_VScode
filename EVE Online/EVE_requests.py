@@ -121,7 +121,8 @@ df = market_orders(10000054)
 #df2 = df['type_name'].copy().drop_duplicates().to_frame() # unique goods
 
 
-
+#%%
+# Pandas Pivot table
 # lab3 In [29]
 df_gptest = df[['type_name','is_buy_order','price']]
 grouped_test1 = df_gptest.groupby(['type_name','is_buy_order'],as_index=False).max()
@@ -131,3 +132,36 @@ grouped_test1.to_excel("EVE Online\\grouped.xlsx")
 grouped_pivot = grouped_test1.pivot(index='type_name',columns='is_buy_order')
 grouped_pivot
 grouped_pivot.to_excel("EVE Online\\pivot.xlsx")
+
+#%%
+df.dropna(inplace=True)
+
+database = {}
+for index, row in df.iterrows():
+    if row['type_name'] not in database:
+        if row['is_buy_order'] == True:
+            database[row['type_name']] = {'highest_buy_order': row['price'], 'lowest_sell_order': None}
+        else:
+            database[row['type_name']] = {'lowest_sell_order': row['price'], 'highest_buy_order': None}
+            
+    else:
+        if row["is_buy_order"] == True:
+            if database[row["type_name"]]['highest_buy_order'] == None:
+                database[row["type_name"]]['highest_buy_order'] = row["price"]
+            if row["price"] > database[row["type_name"]]['highest_buy_order']:
+                database[row["type_name"]]['highest_buy_order'] = row["price"]
+        if row["is_buy_order"] == False:
+            if database[row["type_name"]]['lowest_sell_order'] == None:
+                database[row["type_name"]]['lowest_sell_order'] = row["price"]                
+            if row["price"] < database[row["type_name"]]['lowest_sell_order']:
+                database[row["type_name"]]['lowest_sell_order'] = row["price"]
+
+            
+df.loc[df['type_name'] == 'Arbalest Compact Light Missile Launcher']
+
+for key in database:
+    try:
+        if database[key]['highest_buy_order'] > database[key]['lowest_sell_order']:
+            print("{}: the lowest_sell_order is {} and highest_buy_order is {}".format(key, database[key]['lowest_sell_order'], database[key]['highest_buy_order']))
+    except TypeError:
+            continue

@@ -60,3 +60,31 @@ for url in urls:
             url = '{}{}'.format('https:', url)
         response = requests.get(url)
         f.write(response.content)
+
+        
+#%% kohl
+
+site = 'https://kohlchan.net/int/res/10976646.html'
+
+response = requests.get(site)
+
+soup = BeautifulSoup(response.text, 'html.parser')
+a_tags = soup.find_all('a', {"class":"imgLink"})
+
+urls = [img['href'] for img in a_tags]
+
+for url in urls:
+    # url = url.replace('s.', '.')
+    # url = url.replace('/thumb/', '/src/')
+    filename = re.search(r'/([\w_-]+[.](jpg|gif|png|mp4|webm))$', url)
+    if not filename:
+          print("Regex didn't match with the url: {}".format(url))
+          continue
+    with open(filename.group(1), 'wb') as f:
+        if 'http' not in url:
+            # sometimes an image source can be relative 
+            # if it is provide the base url which also happens 
+            # to be the 'site' variable atm. 
+            url = '{}{}'.format('https://kohlchan.net', url)
+        response = requests.get(url)
+        f.write(response.content)

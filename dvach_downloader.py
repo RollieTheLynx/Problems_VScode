@@ -20,7 +20,7 @@ urls = [img['href'] for img in a_tags]
 for url in urls:
     # url = url.replace('s.', '.')
     # url = url.replace('/thumb/', '/src/')
-    filename = re.search(r'/([\w_-]+[.](jpg|gif|png|mp4))$', url)
+    filename = re.search(r'/([\w_-]+[.](jpg|gif|png|mp4|webm))$', url)
     if not filename:
           print("Regex didn't match with the url: {}".format(url))
           continue
@@ -30,5 +30,33 @@ for url in urls:
             # if it is provide the base url which also happens 
             # to be the 'site' variable atm. 
             url = '{}{}'.format('https://2ch.hk', url)
+        response = requests.get(url)
+        f.write(response.content)
+        
+
+  
+#%% 4chin
+site = 'https://boards.4channel.org/an/thread/3700071'
+
+response = requests.get(site)
+
+soup = BeautifulSoup(response.text, 'html.parser')
+a_tags = soup.find_all('a', {"class":"fileThumb"})
+
+urls = [img['href'] for img in a_tags]
+
+for url in urls:
+    # url = url.replace('s.', '.')
+    # url = url.replace('/thumb/', '/src/')
+    filename = re.search(r'/([\w_-]+[.](jpg|gif|png|mp4|webm))$', url)
+    if not filename:
+          print("Regex didn't match with the url: {}".format(url))
+          continue
+    with open(filename.group(1), 'wb') as f:
+        if 'http' not in url:
+            # sometimes an image source can be relative 
+            # if it is provide the base url which also happens 
+            # to be the 'site' variable atm. 
+            url = '{}{}'.format('https:', url)
         response = requests.get(url)
         f.write(response.content)

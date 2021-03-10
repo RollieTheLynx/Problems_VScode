@@ -93,18 +93,25 @@ def char_standings(character_id):
     result = json.loads(response.content)
     print(result)
     
-    CharacterID = result["CharacterID"]
+    character_id = result["CharacterID"]
     
-    # Make an authenticated call.
-    api = swagger_client.CharacterApi()
-    api.api_client.set_default_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0') # Set a relevant user agent so we know which software is actually using ESI
-    api.api_client.host = "https://esi.tech.ccp.is"
-    Configuration().access_token = "{}".format(access_token) # fill in your access token here
-    try:
-        response = api.get_characters_character_id_standings({CharacterID}) # fill in the character id here
-        print(response)
-    except ApiException as e:
-        print("Exception when calling CharacterApi->get_characters_character_id_standings: %s\n" % e)
-
-    
-
+    # # Make an authenticated call with swagger_client
+    # api = swagger_client.CharacterApi()
+    # api.api_client.set_default_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0') # Set a relevant user agent so we know which software is actually using ESI
+    # api.api_client.host = "https://esi.tech.ccp.is"
+    # Configuration().access_token = "{}".format(access_token) # fill in your access token here
+    # try:
+    #     response = api.get_characters_character_id_standings({CharacterID}) # fill in the character id here
+    #     print(response)
+    # except ApiException as e:
+    #     print("Exception when calling CharacterApi->get_characters_character_id_standings: %s\n" % e)
+        
+        
+    # Make an authenticated call
+    url = 'https://esi.evetech.net/latest/characters/{}/standings/'.format(character_id)
+    #headers = {"User-Agent', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0"}
+    headers = {"Authorization":"Bearer {}".format(access_token)}
+    response = requests.get(url, headers = headers)
+    result = json.loads(response.content)
+    print(result)
+   

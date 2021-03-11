@@ -11,10 +11,6 @@ import requests
 import json
 import base64
 import webbrowser
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client import Configuration
-
 
 def char_info(character_id):
     ''' Get character's public information

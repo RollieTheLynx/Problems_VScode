@@ -31,7 +31,10 @@ import html
             # print("Page: {}, thread on page: {}, com: {}".format(page, threads, ""))
 
 
-thread_url = 'https://a.4cdn.org/out/thread/2084414.json'
+inlink = 'https://boards.4channel.org/an/thread/3773932'
+board, op_no = inlink.split("/")[3], inlink.split("/")[5]
+
+thread_url = 'https://a.4cdn.org/{}/thread/{}.json'.format(board, op_no)
 thread_get = requests.get(thread_url)
 thread_reply = json.loads(thread_get.content)
 for post_no in range(len(thread_reply["posts"])):

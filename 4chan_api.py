@@ -39,7 +39,7 @@ thread_get = requests.get(thread_url)
 thread_reply = json.loads(thread_get.content)
 for post_no in range(len(thread_reply["posts"])):
     try:
-        image_link = 'https://i.4cdn.org/out/{}{}'.format(thread_reply["posts"][post_no]["tim"], thread_reply["posts"][post_no]["ext"])
+        image_link = 'https://i.4cdn.org/{}/{}{}'.format(board, thread_reply["posts"][post_no]["tim"], thread_reply["posts"][post_no]["ext"])
         file_name = '{}{}'.format(thread_reply["posts"][post_no]["filename"], thread_reply["posts"][post_no]["ext"])
         with open(file_name, 'wb') as f:
             image_response = requests.get(image_link)

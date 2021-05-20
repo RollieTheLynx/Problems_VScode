@@ -12,7 +12,6 @@ import os
 
 # найти id по тайтлу
 def FindID(title):
-    title = "Awkward Senpai"
     manga_url = "https://api.mangadex.org/manga"
     parameters = {"title": title}
     r = requests.get(manga_url, params=parameters)
@@ -51,7 +50,6 @@ def DownloadChaptersBatch(title, data_batch):
             page_url = "{}/data/{}/{}".format(base_url, chapter["data"]["attributes"]["hash"], page)
             extension = page.split(".")[1]
             print('Downloading Chapter {}, page {}'.format(chapter["data"]["attributes"]["chapter"], page_no + 1))
-            print(extension)
             download_dir = '{} - {}'.format(title, chapter["data"]["attributes"]["chapter"])
             if not os.path.exists(download_dir):
                 os.mkdir(download_dir)
@@ -61,13 +59,15 @@ def DownloadChaptersBatch(title, data_batch):
                 f.write(requests.request("GET", page_url).content)
             page_no += 1
 
-title = "Awkward Senpai"
-# manga_id = FindID(title)
-manga_id = "a05a7c80-723c-4bba-8cc7-bce8e5116bb1"
+title = "Abyss"
+manga_id = FindID(title)
+#manga_id = "a05a7c80-723c-4bba-8cc7-bce8e5116bb1"
 
 # получаем первый батч глав, чтобы узнать общее число глав total и число глав в батче limit
 data = RequestChaptersBatch(manga_id, 0)
+
 total_chapters = data["total"]
+print(str(total_chapters) + " chapters total")
 limit = data["limit"]
 # выкачиваем первый батч
 DownloadChaptersBatch(title, data)
@@ -79,3 +79,5 @@ for batch in range(limit, total_chapters, limit):
 
 
 #TODO уже скачанное
+#TODO название главы
+#TODO 0 to cancel

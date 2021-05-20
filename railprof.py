@@ -12,6 +12,48 @@ from random import randrange
 import datetime
 import openpyxl
 from openpyxl.utils.dataframe import dataframe_to_rows
+import brotli
+
+
+url = "https://www.railpro.co.uk/business-directory"
+headers = {
+    "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Encoding":"gzip, deflate, br",
+    "Accept-Language":"ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+    "Connection":"keep-alive",
+    "Cookie":"__cfduid=d0bdb4a215cc527d3a5d93e808330be631615619521; _ga=GA1.3.2035340857.1615619488; _gid=GA1.3.548665206.1615619488; wpjb_transient_id=1615619525-9263; strack_tracking_code=3596634.43f1ec417b2faffef76c558e18c58396",
+    "Host":"www.railpro.co.uk",
+    "Referer":"https://www.railpro.co.uk/business-directory",
+    "Upgrade-Insecure-Requests":'1',
+    "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0"
+    }
+
+response = requests.get(url, headers = headers)
+page_html = brotli.decompress(soup)
+print(page_html)
+soup = BeautifulSoup(response.content, "html.parser")
+print(soup)
+
+
+from urllib.request import urlopen as uReq
+
+my_url = "https://www.railpro.co.uk/business-directory"
+
+uClient = uReq(my_url, headers=headers)
+page_html = uClient.read()
+uClient.close()
+
+print(uClient.headers['Content-Encoding']) # `br` means `brotli`
+
+
+
+
+
+
+
+
+
+
 #%%
 def scrapePage(link, dataframe):
     response = requests.get(link)
@@ -62,7 +104,7 @@ def scrapePage(link, dataframe):
     
     return new_link, dataframe
 #%%    
-link = "https://www.angstrem.ru/ru/catalog/silovye-poluprovodnikovye-pribory/igbt-moduli"
+link = "https://www.railpro.co.uk/business-directory"
 dataframe = pandas.DataFrame({})
 
 while True:

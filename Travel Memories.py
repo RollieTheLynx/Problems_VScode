@@ -19,9 +19,9 @@ def GPX_Lister(gpx_folder):
     return gpx_files
 
 
-gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python Scripts\\Problems\\Germany GPX'
+#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
+gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
 gpx_files = GPX_Lister(gpx_folder)
-
 
 #  определяем координаты старта и timestamp начала и конца тура
 def Time_period(gpx_files):
@@ -69,10 +69,10 @@ def Track_builder(gpx_files):
         for i in range(len(lon_list)):
             points.append([lat_list[i], lon_list[i]])
         points = points[::4]  # оставляем каждую четвертую точку, чтобы не перегружать HTML
-        colors = ["black", "gray", "maroon", "red", "purple", "fuchsia",
+        colors = ["black", "maroon", "red", "purple", "fuchsia",
                   "green", "lime", "olive", "yellow", "navy", "aqua",
                   "blue", "blueviolet", "brown", "chartreuse", "coral",
-                  "cornflowerblue", "crimson", "cyan", "darkblue", "darkcyan",
+                  "crimson", "cyan", "darkblue", "darkcyan",
                   "darkgoldenrod", "darkgreen", "darkkhaki", "darkmagenta",
                   "darkolivegreen", "darkorange", "darkorchid", "darkred",
                   "darksalmon", "darkseagreen", "darkslateblue",
@@ -144,19 +144,32 @@ def Photo_labels(foldername):
             if lon_sign == "W":
                 decimal_lon *= -1
             photo_time = datetime.strptime(my_image.datetime, "%Y:%m:%d %H:%M:%S").timestamp()
+
             #  добавить лейбл, если он был сделан во время тура
             if total_end_time > photo_time > total_start_time:
-                iframe = '''<html><head><meta name="viewport" content="width=device-width; height=device-height;">
-                            <link rel="stylesheet" href="resource://content-accessible/ImageDocument.css">
-                            <title>Photo</title></head><body><img src="{}" alt="{}" class="shrinkToFit"
-                            width="{}" height="{}"></body></html>'''.format('file:///{}'.format(image).replace("\\", "/"), 'file:///{}'.format(image).replace("\\", "/"), photo_width*0.2, photo_height*0.2)
+                file_link = 'file:///{}'.format(image).replace("\\", "/")
+                iframe = '''<html>
+                                <head>
+                                    <meta name="viewport" content="width=device-width; height=device-height;">
+                                    <link rel="stylesheet" href="resource://content-accessible/ImageDocument.css">
+                                    <title>
+                                        Photo
+                                    </title>
+                                </head>
+                                <body>
+                                    <a href="{}" target="_blank">
+                                        <img src="{}" alt="{}" class="shrinkToFit" width="{}" height="{}">
+                                    </a>
+                                </body>
+                            </html>'''.format(file_link, file_link, file_link, photo_width*0.2, photo_height*0.2)
                 popup = folium.Popup(iframe)
                 folium.Marker(location=[decimal_lat, decimal_lon], tooltip=iframe,
-                                        popup=popup, icon=folium.Icon(color='gray', icon='image', prefix='fa')).add_to(myMap)  # https://fontawesome.com/icons/image
+                              popup=popup, icon=folium.Icon(color='gray', icon='image', prefix='fa')).add_to(myMap)  # https://fontawesome.com/icons/image
 
 
-photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+#photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
 Photo_labels(photos_folder)
 
-myMap.save("Germany Tour.html")
-print("done!")
+myMap.save("Estonia Tour.html")
+print("Done!")

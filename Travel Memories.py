@@ -6,22 +6,31 @@ from exif import Image
 import folium
 import os
 from datetime import datetime
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
+# TODO добавить считывание из локального файла
+cloudinary.config( 
+  cloud_name = "dq0j8nvsz", 
+  api_key = "429268596266338", 
+  api_secret = "fgzjSTei_Uevjc77AGwt8X0-JXI" 
+)
 
-# составляем список файлов GPX в заданной папке
-def GPX_Lister(gpx_folder):
-    gpx_files = []
-    for root, dirs, files in os.walk(gpx_folder, topdown=True):
+# составляем список файлов с нужным расширением в заданной папке
+def File_Lister(folder, extension):
+    files_list = []
+    for root, dirs, files in os.walk(folder, topdown=True):
         for gpx in files:
             _, ending = os.path.splitext(gpx)
-            if ending == ".gpx":
-                gpx_files.append(os.path.join(root, gpx))
-    return gpx_files
+            if ending == extension:
+                files_list.append(os.path.join(root, gpx))
+    return files_list
 
 
 #gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
 gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
-gpx_files = GPX_Lister(gpx_folder)
+gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
 def Time_period(gpx_files):
@@ -100,16 +109,31 @@ def Track_builder(gpx_files):
 Track_builder(gpx_files)
 
 
+# загружаем фотки в облако
+def UploadFolder2Cloudinary(foldername):
+    images = File_Lister(foldername, ".jpg")
+    for image in images:
+        cloudinary.uploader.upload(image, 
+        folder = foldername.split("\\")[-1], 
+        overwrite = 'true', 
+        use_filename = 'true',
+        unique_filename = 'false',
+        resource_type = "image")
+photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
+UploadFolder2Cloudinary(photos_folder)
+
+# получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
+folder_response  = cloudinary.api.resources(type = "upload", prefix = "Germany") # prefix = имя папки на cloudinary
+file_dictionary = {}
+for photo in folder_response["resources"]:
+  file_dictionary[photo["url"].split("/")[-1]] = photo["url"]
+print(file_dictionary)
+
+
 # добавляем на карту лейблы с фотографиями
 def Photo_labels(foldername):
     # составляем список JPG
-    images = []
-    for root, dirs, files in os.walk(foldername, topdown=True):
-        for name in files:
-            _, ending = os.path.splitext(name)
-            if ending == ".jpg":
-                images.append(os.path.join(root, name))
-
+    images = File_Lister(foldername, ".jpg")
     for image in images:
         with open(image, 'rb') as image_file:
             my_image = Image(image_file)
@@ -147,7 +171,12 @@ def Photo_labels(foldername):
 
             #  добавить лейбл, если он был сделан во время тура
             if total_end_time > photo_time > total_start_time:
-                file_link = 'file:///{}'.format(image).replace("\\", "/")
+                # file_link = 'file:///{}'.format(image).replace("\\", "/") # для локальных фалов на компе
+                file_link = file_dictionary[image].replace("\\", "/")
+                # ссылка вида http://res.cloudinary.com/dq0j8nvsz/image/upload/v1621842090/Germany/1604545559682_wrxs6h.jpg
+                thumb_link = file_link.split('/')[0:6] + ['c_thumb,w_{},h_{},g_face'.format(photo_width*0.2, photo_height*0.2)] + file_link.split('/')[6:9].join("/")
+                # thumb вида https://res.cloudinary.com/dq0j8nvsz/image/upload/c_thumb,w_200,g_face/v1621842090/Germany/1604545559682_wrxs6h.jpg
+                # https://cloudinary.com/documentation/transformation_reference
                 iframe = '''<html>
                                 <head>
                                     <meta name="viewport" content="width=device-width; height=device-height;">
@@ -161,7 +190,7 @@ def Photo_labels(foldername):
                                         <img src="{}" alt="{}" class="shrinkToFit" width="{}" height="{}">
                                     </a>
                                 </body>
-                            </html>'''.format(file_link, file_link, file_link, photo_width*0.2, photo_height*0.2)
+                            </html>'''.format(file_link, thumb_link, file_link, photo_width*0.2, photo_height*0.2)
                 popup = folium.Popup(iframe)
                 folium.Marker(location=[decimal_lat, decimal_lon], tooltip=iframe,
                               popup=popup, icon=folium.Icon(color='gray', icon='image', prefix='fa')).add_to(myMap)  # https://fontawesome.com/icons/image

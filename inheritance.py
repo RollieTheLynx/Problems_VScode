@@ -14,12 +14,12 @@ class Cat(Mammal):
     def meow(self):
         print("meow")
 
-class Nigger(Mammal):
+class Humie(Mammal):
     pass
 
-Tyrone = Nigger()
-Tyrone.walk()
+John = Humie()
+John.walk()
 
 Tom = Cat()
 Tom.walk()
-Tyrone.meow()  #AttributeError: 'Nigger' object has no attribute 'meow'
+John.meow()  #AttributeError: 'Humie' object has no attribute 'meow'

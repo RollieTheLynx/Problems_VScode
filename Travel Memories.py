@@ -9,13 +9,10 @@ from datetime import datetime
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import my_keys
 
-# TODO добавить считывание из локального файла
-cloudinary.config( 
-  cloud_name="dq0j8nvsz",
-  api_key="429268596266338",
-  api_secret="fgzjSTei_Uevjc77AGwt8X0-JXI"
-)
+# считывание из локального файла
+my_keys.cloudinary_keys()
 
 
 # составляем список файлов с нужным расширением в заданной папке
@@ -100,24 +97,24 @@ def Track_builder(gpx_files):
 # загружаем фотки в облако
 def UploadFolder2Cloudinary(foldername):
     images = File_Lister(foldername, ".jpg")
-    counter = 1
+    counter = 0
     for image in images:
         cloudinary.uploader.upload(image,
-        folder=foldername.split("\\")[-1],
-        overwrite='false',
-        use_filename='true',
-        unique_filename='false',
-        resource_type="image")
+                                   folder=foldername.split("\\")[-1],
+                                   overwrite='false',
+                                   use_filename='true',
+                                   unique_filename='false',
+                                   resource_type="image")
         counter += 1
         print("Uploaded {} out of {} images".format(counter, len(images)))
 
 
 # получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
-def RequestCloudURLS(file_dictionary, next_cursor):
+def RequestCloudURLS(photos_folder, file_dictionary, next_cursor):
     if next_cursor is None:
-        folder_response = cloudinary.api.resources(type = "upload", prefix = "2018-07-14 Эстония", max_results = 500) # prefix = имя папки на cloudinary
+        folder_response = cloudinary.api.resources(type="upload", prefix=photos_folder.split("\\")[-1], max_results=500) # prefix = имя папки на cloudinary
     else:
-        folder_response = cloudinary.api.resources(type = "upload", prefix = "2018-07-14 Эстония", max_results = 500, next_cursor = next_cursor)
+        folder_response = cloudinary.api.resources(type="upload", prefix=photos_folder.split("\\")[-1], max_results=500, next_cursor = next_cursor)
     for photo in folder_response["resources"]:
         file_dictionary[photo["url"].split("/")[-1]] = photo["url"]
     if "next_cursor" not in folder_response:
@@ -130,9 +127,9 @@ def RequestCloudURLS(file_dictionary, next_cursor):
 def Photo_labels(foldername, file_dictionary):
     # составляем список JPG
     images = File_Lister(foldername, ".jpg")
-    images = list(file_dictionary.keys()) # затычка если мы удалили что-то из облака, но это осталось локально
+    #images = list(file_dictionary.keys()) # затычка если мы удалили что-то из облака, но это осталось локально
     for image in images:
-        image = "F:\\Архив\\My Pictures\\2018-07-14 Эстония\\" + image #TODO удалить это
+        #image = "F:\\Архив\\My Pictures\\2018-07-14 Эстония\\" + image #TODO удалить это
         with open(image, 'rb') as image_file:
             my_image = Image(image_file)
 
@@ -196,39 +193,46 @@ def Photo_labels(foldername, file_dictionary):
 
 
 # составляем список файлов GPX в заданной папке
-#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
-gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
+gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
+#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
 gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
 total_start_time, total_end_time, start_coords = Time_period(gpx_files)
 
 # создаем карту Folium на координатах старта тура
-myMap = folium.Map(location=[start_coords[1], start_coords[0]], zoom_start=8)
+thunderforest_apikey = my_keys.thunderforest_apikey()
+tiles_ThunderforestOpenCycleMap = "https://tile.thunderforest.com/cycle/{{z}}/{{x}}/{{y}}.png?apikey={}".format(thunderforest_apikey)
+tiles_CyclOSM = "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
+tiles_ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+# другие tiles здесь: https://leaflet-extras.github.io/leaflet-providers/preview/
+
+attr_thunder = ('&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
+attr_CyclOSM = ('<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
+attr_ESRI = ("Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community")
+myMap = folium.Map(location=[start_coords[1], start_coords[0]], tiles="OpenStreetMap",  zoom_start=8)
+
+folium.TileLayer(tiles_ThunderforestOpenCycleMap, attr=attr_thunder, name = 'ThunderforestOpenCycleMap').add_to(myMap)
+folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMap)
+folium.TileLayer(tiles_ESRI, attr=attr_ESRI, name = 'ESRI.WorldImagery').add_to(myMap)
+folium.LayerControl().add_to(myMap)
 
 # строим треки и добавляем на карту
 Track_builder(gpx_files)
 
 # загружаем фотки в облако
-photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
+# photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
+photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
 #UploadFolder2Cloudinary(photos_folder)
 
 # получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
 file_dictionary = {}
-file_dictionary, next_cursor = RequestCloudURLS(file_dictionary, None)
+file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, None)
 while next_cursor != 0:
-    file_dictionary, next_cursor = RequestCloudURLS(file_dictionary, next_cursor)
-
+    file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, next_cursor)
 
 # добавляем на карту лейблы с фотографиями
-#photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
-photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
 Photo_labels(photos_folder, file_dictionary)
 
-myMap.save("Estonia Tour.html")
+myMap.save("Germany Tour.html")
 print("Done!")
-
-
-
-n = ['http:', '', 'res.cloudinary.com', 'dq0j8nvsz', 'image', 'upload', 'c_thumb,w_768.0,h_432.0,g_face', 'v1621877637', '2018-07-14%20%D0%AD%D1%81%D1%82%D0%BE%D0%BD%D0%B8%D1%8F', 'IMG_20180801_145912.jpg']
-print("/".join(n))

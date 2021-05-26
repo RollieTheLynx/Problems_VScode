@@ -165,7 +165,7 @@ def Photo_labels(foldername, file_dictionary):
             # file_link = 'file:///{}'.format(image).replace("\\", "/") # для локальных фалов на компе
             file_link = file_dictionary[image.split("\\")[-1]].replace("\\", "/") #TODO удалить .split("\\")[-1]
             # ссылка вида http://res.cloudinary.com/dq0j8nvsz/image/upload/v1621842090/Germany/1604545559682_wrxs6h.jpg
-            thumb_link = file_link.split('/')[0:6] + ['c_thumb,w_{},h_{},g_face'.format(int(photo_width*0.2), int(photo_height*0.2))] + file_link.split('/')[6:9]
+            thumb_link = file_link.split('/')[0:6] + ['c_thumb,w_{},h_{}'.format(int(photo_width*0.2), int(photo_height*0.2))] + file_link.split('/')[6:9]
             thumb_link = "/".join(thumb_link)
             # thumb вида https://res.cloudinary.com/dq0j8nvsz/image/upload/c_thumb,w_200,g_face/v1621842090/Germany/1604545559682_wrxs6h.jpg
             # https://cloudinary.com/documentation/transformation_reference
@@ -231,7 +231,7 @@ while next_cursor != 0:
 # добавляем на карту лейблы с фотографиями
 Photo_labels(photos_folder, file_dictionary)
 
-myMap.save("Germany Tour.html")
+myMap.save("estonia.html")
 print("Done!")
 
-# строки 132, 197, 224 - менять при запуске
+# строки 128, 193, 224, 234 - менять при запуске

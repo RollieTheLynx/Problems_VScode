@@ -11,10 +11,6 @@ import cloudinary.uploader
 import cloudinary.api
 import my_keys
 
-# считывание из локального файла
-my_keys.cloudinary_keys()
-
-
 # составляем список файлов с нужным расширением в заданной папке
 def File_Lister(folder, extension):
     files_list = []
@@ -126,10 +122,10 @@ def RequestCloudURLS(photos_folder, file_dictionary, next_cursor):
 # добавляем на карту лейблы с фотографиями
 def Photo_labels(foldername, file_dictionary):
     # составляем список JPG
-    images = File_Lister(foldername, ".jpg")
-    #images = list(file_dictionary.keys()) # затычка если мы удалили что-то из облака, но это осталось локально
+    #images = File_Lister(foldername, ".jpg")
+    images = list(file_dictionary.keys()) # затычка если мы удалили что-то из облака, но это осталось локально
     for image in images:
-        #image = "F:\\Архив\\My Pictures\\2018-07-14 Эстония\\" + image #TODO удалить это
+        image = "F:\\Архив\\My Pictures\\2018-07-14 Эстония\\" + image # затычка если мы удалили что-то из облака, но это осталось локально
         with open(image, 'rb') as image_file:
             my_image = Image(image_file)
 
@@ -193,8 +189,8 @@ def Photo_labels(foldername, file_dictionary):
 
 
 # составляем список файлов GPX в заданной папке
-gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
-#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
+# gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
+gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
 gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
@@ -220,9 +216,10 @@ folium.LayerControl().add_to(myMap)
 # строим треки и добавляем на карту
 Track_builder(gpx_files)
 
+my_keys.cloudinary_keys()
 # загружаем фотки в облако
-# photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
-photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
+# photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
 #UploadFolder2Cloudinary(photos_folder)
 
 # получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
@@ -236,3 +233,5 @@ Photo_labels(photos_folder, file_dictionary)
 
 myMap.save("Germany Tour.html")
 print("Done!")
+
+# строки 132, 197, 224 - менять при запуске

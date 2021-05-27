@@ -122,7 +122,7 @@ def RequestCloudURLS(photos_folder, file_dictionary, next_cursor):
 
 # добавляем на карту лейблы с фотографиями
 def Photo_labels(foldername, file_dictionary):
-    cluster = plugins.MarkerCluster().add_to(myMap)  # если делаем кластер
+    cluster = plugins.MarkerCluster(control=False).add_to(myMap)  # если делаем кластер
     # составляем список JPG
     # images = File_Lister(foldername, ".jpg") # если ставим маркеры по локальным фоткам, а не из облака
     images = list(file_dictionary.keys())
@@ -189,7 +189,7 @@ def Photo_labels(foldername, file_dictionary):
             folium.Marker(location=[decimal_lat, decimal_lon],
                           tooltip=iframe,
                           popup=popup,
-                          icon=folium.Icon(color='gray', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
+                          icon=folium.Icon(color='black', icon_color = 'lightgray', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
 
 
 # составляем список файлов GPX в заданной папке

@@ -10,6 +10,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import my_keys
+from folium import plugins
 
 # составляем список файлов с нужным расширением в заданной папке
 def File_Lister(folder, extension):
@@ -121,11 +122,12 @@ def RequestCloudURLS(photos_folder, file_dictionary, next_cursor):
 
 # добавляем на карту лейблы с фотографиями
 def Photo_labels(foldername, file_dictionary):
+    cluster = plugins.MarkerCluster().add_to(myMap)  # если делаем кластер
     # составляем список JPG
-    #images = File_Lister(foldername, ".jpg")
-    images = list(file_dictionary.keys()) # затычка если мы удалили что-то из облака, но это осталось локально
+    # images = File_Lister(foldername, ".jpg") # если ставим маркеры по локальным фоткам, а не из облака
+    images = list(file_dictionary.keys())
     for image in images:
-        image = "F:\\Архив\\My Pictures\\2018-07-14 Эстония\\" + image # затычка если мы удалили что-то из облака, но это осталось локально
+        image = foldername + "\\" + image
         with open(image, 'rb') as image_file:
             my_image = Image(image_file)
 
@@ -165,9 +167,9 @@ def Photo_labels(foldername, file_dictionary):
             # file_link = 'file:///{}'.format(image).replace("\\", "/") # для локальных фалов на компе
             file_link = file_dictionary[image.split("\\")[-1]].replace("\\", "/") #TODO удалить .split("\\")[-1]
             # ссылка вида http://res.cloudinary.com/dq0j8nvsz/image/upload/v1621842090/Germany/1604545559682_wrxs6h.jpg
-            thumb_link = file_link.split('/')[0:6] + ['c_thumb,w_{},h_{}'.format(int(photo_width*0.2), int(photo_height*0.2))] + file_link.split('/')[6:9]
+            thumb_link = file_link.split('/')[0:6] + ['c_thumb,w_{},h_{}'.format(int(photo_width*0.2084), int(photo_height*0.2084))] + file_link.split('/')[6:9]
             thumb_link = "/".join(thumb_link)
-            # thumb вида https://res.cloudinary.com/dq0j8nvsz/image/upload/c_thumb,w_200,g_face/v1621842090/Germany/1604545559682_wrxs6h.jpg
+            # thumb вида https://res.cloudinary.com/dq0j8nvsz/image/upload/c_thumb,w_200/v1621842090/Germany/1604545559682_wrxs6h.jpg
             # https://cloudinary.com/documentation/transformation_reference
             iframe = '''<html>
                             <head>
@@ -182,15 +184,19 @@ def Photo_labels(foldername, file_dictionary):
                                     <img src="{}" alt="{}" class="shrinkToFit" width="{}" height="{}">
                                 </a>
                             </body>
-                        </html>'''.format(file_link, thumb_link, file_link, photo_width*0.2, photo_height*0.2)
+                        </html>'''.format(file_link, thumb_link, file_link, photo_width*0.2084, photo_height*0.2084)
             popup = folium.Popup(iframe)
-            folium.Marker(location=[decimal_lat, decimal_lon], tooltip=iframe,
-                            popup=popup, icon=folium.Icon(color='gray', icon='image', prefix='fa')).add_to(myMap)  # https://fontawesome.com/icons/image
+            folium.Marker(location=[decimal_lat, decimal_lon],
+                          tooltip=iframe,
+                          popup=popup,
+                          icon=folium.Icon(color='gray', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
 
 
 # составляем список файлов GPX в заданной папке
 # gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
 gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
+photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
+# photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
 gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
@@ -208,18 +214,11 @@ attr_CyclOSM = ('<a href="https://github.com/cyclosm/cyclosm-cartocss-style/rele
 attr_ESRI = ("Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community")
 myMap = folium.Map(location=[start_coords[1], start_coords[0]], tiles="OpenStreetMap",  zoom_start=8)
 
-folium.TileLayer(tiles_ThunderforestOpenCycleMap, attr=attr_thunder, name = 'ThunderforestOpenCycleMap').add_to(myMap)
-folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMap)
-folium.TileLayer(tiles_ESRI, attr=attr_ESRI, name = 'ESRI.WorldImagery').add_to(myMap)
-folium.LayerControl().add_to(myMap)
-
 # строим треки и добавляем на карту
 Track_builder(gpx_files)
 
-my_keys.cloudinary_keys()
 # загружаем фотки в облако
-photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
-# photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+my_keys.cloudinary_keys()
 #UploadFolder2Cloudinary(photos_folder)
 
 # получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
@@ -231,7 +230,10 @@ while next_cursor != 0:
 # добавляем на карту лейблы с фотографиями
 Photo_labels(photos_folder, file_dictionary)
 
-myMap.save("estonia.html")
-print("Done!")
+folium.TileLayer(tiles_ThunderforestOpenCycleMap, attr=attr_thunder, name = 'ThunderforestOpenCycleMap').add_to(myMap)
+folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMap)
+folium.TileLayer(tiles_ESRI, attr=attr_ESRI, name = 'ESRI.WorldImagery').add_to(myMap)
+folium.LayerControl().add_to(myMap)
 
-# строки 128, 193, 224, 234 - менять при запуске
+myMap.save("estonia_cluster.html")
+print("Done!")

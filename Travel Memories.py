@@ -187,7 +187,7 @@ def Photo_labels(foldername, file_dictionary):
                         </html>'''.format(file_link, thumb_link, file_link, photo_width*0.2084, photo_height*0.2084)
             popup = folium.Popup(iframe)
             folium.Marker(location=[decimal_lat, decimal_lon],
-                          tooltip=iframe,
+                          #tooltip=iframe, # убрать для mobile
                           popup=popup,
                           icon=folium.Icon(color='black', icon_color = 'lightgray', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
 

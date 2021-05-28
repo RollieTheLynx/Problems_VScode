@@ -12,6 +12,7 @@ import cloudinary.api
 import my_keys
 from folium import plugins
 
+
 # составляем список файлов с нужным расширением в заданной папке
 def File_Lister(folder, extension):
     files_list = []
@@ -73,10 +74,10 @@ def Track_builder(gpx_files):
                   "darkslategrey", "darkturquoise", "darkviolet", "deeppink",
                   "deepskyblue", "dimgray", "dimgrey", "dodgerblue",
                   "firebrick", "forestgreen", "fuchsia", "gold", "goldenrod",
-                  "gray", "green", "greenyellow", "grey", "hotpink",
+                  "gray", "green", "greenyellow", "grey",
                   "indianred", "indigo", "lawngreen", "lightcoral",
                   "lightseagreen", "lightskyblue", "lightslategrey", "lime",
-                  "limegreen", "magenta", "maroon", "mediumaquamarine",
+                  "limegreen", "magenta", "mediumaquamarine",
                   "mediumblue", "mediumorchid", "mediumpurple",
                   "mediumseagreen", "mediumslateblue", "mediumspringgreen",
                   "mediumturquoise", "mediumvioletred", "midnightblue",
@@ -189,14 +190,14 @@ def Photo_labels(foldername, file_dictionary):
             folium.Marker(location=[decimal_lat, decimal_lon],
                           #tooltip=iframe, # убрать для mobile
                           popup=popup,
-                          icon=folium.Icon(color='black', icon_color = 'lightgray', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
+                          icon=folium.Icon(color='darkblue', icon_color = 'white', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
 
 
 # составляем список файлов GPX в заданной папке
-# gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
-gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
-photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
-# photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
+#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
+#photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
+photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
 gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
@@ -235,5 +236,5 @@ folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMa
 folium.TileLayer(tiles_ESRI, attr=attr_ESRI, name = 'ESRI.WorldImagery').add_to(myMap)
 folium.LayerControl().add_to(myMap)
 
-myMap.save("estonia_cluster.html")
+myMap.save("germany_cluster.html")
 print("Done!")

@@ -8,22 +8,27 @@ from random import randrange
 start_url = 'https://www.c-sko.ru/Company/GetDataForCompanies'
 load = {"inObj":{"pageIndex":1,"pageSize":10000,"RecordsOnPage":100}}
 header = {'Host': 'www.c-sko.ru',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json; charset=utf-8',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Length': '70',
-            'Origin': 'https://www.c-sko.ru',
-            'DNT': '1',
-            'Connection': 'keep-alive',
-            'Referer': 'https://www.c-sko.ru/Company/All'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
+          'Accept': 'application/json, text/javascript, */*; q=0.01',
+          'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Content-Type': 'application/json; charset=utf-8',
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Length': '70', # причина зависания
+          'Origin': 'https://www.c-sko.ru',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Referer': 'https://www.c-sko.ru/Company/All'
         }
 
-#r = requests.get(start_url, headers=header, params=load)
+r = requests.get(start_url, headers=header, params=load)
+print(r.text)
+
 # data = r.json()
 # print(data)
+
+
+
 
 reply_json = {
   "countRecords":497,
@@ -31376,12 +31381,12 @@ def Request_company(no, id, df):
     sleep(randrange(3,9))
     return df
 
-df = pandas.DataFrame(columns=['Полное название', 'Краткое название', 'Адрес', 'ОКВЭД', 'ОГРН', 'Телефон', 'Электронная почта', 'Сайт', 'Контактное лицо'])
+# df = pandas.DataFrame(columns=['Полное название', 'Краткое название', 'Адрес', 'ОКВЭД', 'ОГРН', 'Телефон', 'Электронная почта', 'Сайт', 'Контактное лицо'])
 
-for company in range(len(reply_json["items"])):
-    id = reply_json["items"][company]["CompanyId"]
-    df = Request_company(company, id, df)
-    print(company+1, end=" out of ")
-    print(len(reply_json["items"]))
+# for company in range(len(reply_json["items"])):
+#     id = reply_json["items"][company]["CompanyId"]
+#     df = Request_company(company, id, df)
+#     print(company+1, end=" out of ")
+#     print(len(reply_json["items"]))
 
-df.to_excel("c-sko.xlsx", index=False)
+# df.to_excel("c-sko.xlsx", index=False)

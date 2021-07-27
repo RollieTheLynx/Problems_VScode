@@ -29,7 +29,8 @@ def Time_period(gpx_files):
     total_start_time = 32503669200  # 3000ый год :)
     total_end_time = 0
     for gpx in gpx_files:
-        data = open(gpx)
+        print("Time period: " + gpx)
+        data = open(gpx, encoding="utf-8", errors='ignore')
         xmldoc = minidom.parse(data)
         start_point = xmldoc.getElementsByTagName('trkpt')[0]
         date_time = xmldoc.getElementsByTagName('time')
@@ -194,10 +195,12 @@ def Photo_labels(foldername, file_dictionary):
 
 
 # составляем список файлов GPX в заданной папке
-gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
+gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
+#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
 #gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
 #photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
-photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+#photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
+photos_folder = "F:\\Архив\\My Pictures\\2021-07-04 Казань"
 gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
@@ -220,7 +223,7 @@ Track_builder(gpx_files)
 
 # загружаем фотки в облако
 my_keys.cloudinary_keys()
-#UploadFolder2Cloudinary(photos_folder)
+UploadFolder2Cloudinary(photos_folder)
 
 # получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
 file_dictionary = {}
@@ -236,5 +239,5 @@ folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMa
 folium.TileLayer(tiles_ESRI, attr=attr_ESRI, name = 'ESRI.WorldImagery').add_to(myMap)
 folium.LayerControl().add_to(myMap)
 
-myMap.save("germany_cluster.html")
+myMap.save("russia_cluster.html")
 print("Done!")

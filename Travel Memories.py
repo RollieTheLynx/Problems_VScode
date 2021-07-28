@@ -195,7 +195,8 @@ def Photo_labels(foldername, file_dictionary):
 
 
 # составляем список файлов GPX в заданной папке
-gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
+#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
+gpx_folder = 'C:\\Users\\TN90072\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
 #gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
 #gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
 #photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
@@ -205,6 +206,12 @@ gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
 total_start_time, total_end_time, start_coords = Time_period(gpx_files)
+print(total_start_time)
+#1625375052.0
+print(total_end_time)
+#1626779006.0
+print(start_coords)
+#('36.1091310', '53.0013120')
 
 # создаем карту Folium на координатах старта тура
 thunderforest_apikey = my_keys.thunderforest_apikey()

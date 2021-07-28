@@ -29,7 +29,6 @@ def Time_period(gpx_files):
     total_start_time = 32503669200  # 3000ый год :)
     total_end_time = 0
     for gpx in gpx_files:
-        print("Time period: " + gpx)
         data = open(gpx, encoding="utf-8", errors='ignore')
         xmldoc = minidom.parse(data)
         start_point = xmldoc.getElementsByTagName('trkpt')[0]
@@ -51,7 +50,7 @@ def Time_period(gpx_files):
 def Track_builder(gpx_files):
     color_counter = 0
     for gpx in gpx_files:
-        data = open(gpx)
+        data = open(gpx, encoding="utf-8", errors='ignore')
         xmldoc = minidom.parse(data)
         track = xmldoc.getElementsByTagName('trkpt')
         n_track = len(track)
@@ -98,12 +97,21 @@ def UploadFolder2Cloudinary(foldername):
     images = File_Lister(foldername, ".jpg")
     counter = 0
     for image in images:
-        cloudinary.uploader.upload(image,
-                                   folder=foldername.split("\\")[-1],
-                                   overwrite='false',
-                                   use_filename='true',
-                                   unique_filename='false',
-                                   resource_type="image")
+        # преобразуем image вида
+        # F:\Архив\My Pictures\2021-07-04 Казань\IMG_20210626_185107.jpg
+        # в public id вида
+        # "2021-07-04 Казань/IMG_20210707_174928"
+        # и проверяем, не загружен ли уже этот файл
+        check = cloudinary.api.resources_by_ids(image.split("\\")[-2] + "\\" + image.split("\\")[-1].split(".")[0])
+        if len(check["resources"]) == 0:
+            cloudinary.uploader.upload(image,
+                                    folder=foldername.split("\\")[-1],
+                                    overwrite='false',
+                                    use_filename='true',
+                                    unique_filename='false',
+                                    resource_type="image")
+        else:
+            print("Already uploaded! Skipping")
         counter += 1
         print("Uploaded {} out of {} images".format(counter, len(images)))
 
@@ -195,8 +203,7 @@ def Photo_labels(foldername, file_dictionary):
 
 
 # составляем список файлов GPX в заданной папке
-#gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
-gpx_folder = 'C:\\Users\\TN90072\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
+gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Russia GPX'
 #gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Germany GPX'
 #gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Estonia GPX'
 #photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
@@ -206,12 +213,6 @@ gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
 total_start_time, total_end_time, start_coords = Time_period(gpx_files)
-print(total_start_time)
-#1625375052.0
-print(total_end_time)
-#1626779006.0
-print(start_coords)
-#('36.1091310', '53.0013120')
 
 # создаем карту Folium на координатах старта тура
 thunderforest_apikey = my_keys.thunderforest_apikey()

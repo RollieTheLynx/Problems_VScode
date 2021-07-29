@@ -91,32 +91,7 @@ def Track_builder(gpx_files):
             color_counter = 0
         folium.PolyLine(points, color=color).add_to(myMap)
 
-
-# загружаем фотки в облако
-def UploadFolder2Cloudinary(foldername):
-    images = File_Lister(foldername, ".jpg")
-    counter = 0
-    for image in images:
-        # преобразуем image вида
-        # F:\Архив\My Pictures\2021-07-04 Казань\IMG_20210626_185107.jpg
-        # в public id вида
-        # "2021-07-04 Казань/IMG_20210707_174928"
-        # и проверяем, не загружен ли уже этот файл
-        check = cloudinary.api.resources_by_ids(image.split("\\")[-2] + "\\" + image.split("\\")[-1].split(".")[0])
-        if len(check["resources"]) == 0:
-            cloudinary.uploader.upload(image,
-                                    folder=foldername.split("\\")[-1],
-                                    overwrite='false',
-                                    use_filename='true',
-                                    unique_filename='false',
-                                    resource_type="image")
-        else:
-            print("Already uploaded! Skipping")
-        counter += 1
-        print("Uploaded {} out of {} images".format(counter, len(images)))
-
-
-# получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
+# получаем ссылки на файлы из облака - словарь имя фото|ссылка в облаке
 def RequestCloudURLS(photos_folder, file_dictionary, next_cursor):
     if next_cursor is None:
         folder_response = cloudinary.api.resources(type="upload", prefix=photos_folder.split("\\")[-1], max_results=500) # prefix = имя папки на cloudinary
@@ -130,9 +105,36 @@ def RequestCloudURLS(photos_folder, file_dictionary, next_cursor):
         new_cursor = folder_response["next_cursor"]
     return file_dictionary, new_cursor
 
+# загружаем фотки в облако
+def UploadFolder2Cloudinary(foldername):
+    local_images = File_Lister(foldername, ".jpg")
+    counter = 0
+    # получаем список уже загруженных в облако файлов
+    file_dictionary = {}
+    file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, None)
+    while next_cursor != 0:
+        file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, next_cursor)
+
+    for image in local_images:
+        print(image)
+        print(list(file_dictionary.keys()))
+        if image not in list(file_dictionary.keys()):
+            cloudinary.uploader.upload(image,
+                                    folder=foldername.split("\\")[-1],
+                                    overwrite='false',
+                                    use_filename='true',
+                                    unique_filename='false',
+                                    resource_type="image")
+        else:
+            print(image + " already uploaded! Skipping")
+        counter += 1
+        print("Uploaded {} out of {} images".format(counter, len(local_images)))
+
 # добавляем на карту лейблы с фотографиями
-def Photo_labels(foldername, file_dictionary):
-    cluster = plugins.MarkerCluster(control=False).add_to(myMap)  # если делаем кластер
+def Photo_labels(foldername, file_dictionary, mobile):
+    if mobile == True:
+        cluster = plugins.MarkerCluster(control=False).add_to(myMap)  # если делаем кластер
+
     # составляем список JPG
     # images = File_Lister(foldername, ".jpg") # если ставим маркеры по локальным фоткам, а не из облака
     images = list(file_dictionary.keys())
@@ -196,10 +198,16 @@ def Photo_labels(foldername, file_dictionary):
                             </body>
                         </html>'''.format(file_link, thumb_link, file_link, photo_width*0.2084, photo_height*0.2084)
             popup = folium.Popup(iframe)
-            folium.Marker(location=[decimal_lat, decimal_lon],
-                          #tooltip=iframe, # убрать для mobile
-                          popup=popup,
-                          icon=folium.Icon(color='darkblue', icon_color = 'white', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
+            if mobile == True:
+                folium.Marker(location=[decimal_lat, decimal_lon],
+                              popup=popup,
+                              icon=folium.Icon(color='darkblue', icon_color = 'white', icon='image', prefix='fa')).add_to(cluster)  # https://fontawesome.com/icons/image
+
+            if mobile == False:
+                folium.Marker(location=[decimal_lat, decimal_lon],
+                              tooltip=iframe,
+                              popup=popup,
+                              icon=folium.Icon(color='darkblue', icon_color = 'white', icon='image', prefix='fa')).add_to(myMap)  # https://fontawesome.com/icons/image
 
 
 # составляем список файлов GPX в заданной папке
@@ -233,14 +241,15 @@ Track_builder(gpx_files)
 my_keys.cloudinary_keys()
 UploadFolder2Cloudinary(photos_folder)
 
-# получаем ссылки на файлы из облака и сопоставляем с локальными файлами в словаре
+# получаем ссылки на файлы из облака - словарь имя фото|ссылка в облаке
 file_dictionary = {}
 file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, None)
 while next_cursor != 0:
     file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, next_cursor)
 
 # добавляем на карту лейблы с фотографиями
-Photo_labels(photos_folder, file_dictionary)
+mobile = False
+Photo_labels(photos_folder, file_dictionary, mobile)
 
 folium.TileLayer(tiles_ThunderforestOpenCycleMap, attr=attr_thunder, name = 'ThunderforestOpenCycleMap').add_to(myMap)
 folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMap)

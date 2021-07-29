@@ -115,10 +115,11 @@ def UploadFolder2Cloudinary(foldername):
     while next_cursor != 0:
         file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, next_cursor)
 
+    print(list(file_dictionary.keys()))
     for image in local_images:
-        print(image)
-        print(list(file_dictionary.keys()))
-        if image not in list(file_dictionary.keys()):
+        print(image.split("\\")[-1])
+        
+        if image.split("\\")[-1] not in list(file_dictionary.keys()):
             cloudinary.uploader.upload(image,
                                     folder=foldername.split("\\")[-1],
                                     overwrite='false',
@@ -217,6 +218,8 @@ gpx_folder = 'C:\\Users\\Rollie\\Documents\\Python_Scripts\\Problems_VScode\\Rus
 #photos_folder = "F:\\Архив\\My Pictures\\2018-07-14 Эстония"
 #photos_folder = "F:\\Архив\\My Pictures\\2019-07-27 Germany"
 photos_folder = "F:\\Архив\\My Pictures\\2021-07-04 Казань"
+mobile = True
+
 gpx_files = File_Lister(gpx_folder, ".gpx")
 
 #  определяем координаты старта и timestamp начала и конца тура
@@ -239,7 +242,7 @@ Track_builder(gpx_files)
 
 # загружаем фотки в облако
 my_keys.cloudinary_keys()
-UploadFolder2Cloudinary(photos_folder)
+#UploadFolder2Cloudinary(photos_folder)
 
 # получаем ссылки на файлы из облака - словарь имя фото|ссылка в облаке
 file_dictionary = {}
@@ -248,7 +251,6 @@ while next_cursor != 0:
     file_dictionary, next_cursor = RequestCloudURLS(photos_folder, file_dictionary, next_cursor)
 
 # добавляем на карту лейблы с фотографиями
-mobile = False
 Photo_labels(photos_folder, file_dictionary, mobile)
 
 folium.TileLayer(tiles_ThunderforestOpenCycleMap, attr=attr_thunder, name = 'ThunderforestOpenCycleMap').add_to(myMap)
@@ -256,5 +258,9 @@ folium.TileLayer(tiles_CyclOSM, attr=attr_CyclOSM, name = 'CyclOSM').add_to(myMa
 folium.TileLayer(tiles_ESRI, attr=attr_ESRI, name = 'ESRI.WorldImagery').add_to(myMap)
 folium.LayerControl().add_to(myMap)
 
-myMap.save("russia_cluster.html")
+if mobile == True:
+    myMap.save("russia_cluster.html")
+else:
+    myMap.save("russia.html")
+
 print("Done!")

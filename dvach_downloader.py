@@ -88,3 +88,26 @@ for url in urls:
             url = '{}{}'.format('https://kohlchan.net', url)
         response = requests.get(url)
         f.write(response.content)
+
+#%% 2ch api
+
+import json
+import requests
+
+# https://2ch.hk/abu/res/42375.html
+
+inlink = 'https://2ch.hk/a/res/7160601.html'
+board, op_no = inlink.split("/")[3], inlink.split("/")[5].split('.')[0]
+
+thread_url = 'https://2ch.hk/{}/res/{}.json'.format(board, op_no)
+thread_get = requests.get(thread_url)
+thread_reply = json.loads(thread_get.content)
+#print(json.dumps(thread_reply, indent=4, sort_keys=True))
+
+for post_no in range(len(thread_reply['threads'][0]['posts'])):
+    for image_no in range(len(thread_reply['threads'][0]['posts'][post_no]['files'])):
+        image_link = 'https://2ch.hk/{}'.format(thread_reply['threads'][0]['posts'][post_no]['files'][image_no]['path'])
+        file_name = thread_reply['threads'][0]['posts'][post_no]['files'][image_no]['fullname']
+        with open(file_name, 'wb') as f:
+            image_response = requests.get(image_link)
+            f.write(image_response.content)

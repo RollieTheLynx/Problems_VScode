@@ -1,26 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-ax^2 + bx + c
-quadratic_equation(1, 2, -3) ➞ 1
 
-quadratic_equation(2, -7, 3) ➞ 3
-
-quadratic_equation(1, -12, -28) ➞ 14
 """
-def quadratic_equation(a,b,c):
-    d = b*2 - 4*a*c
-    if d>=0:
-        x1 = (-b + d**(1/2))/2*a
-        x2 = (-b - d**(1/2))/2*a
-    return int(x1)
+import json
+import requests
 
-
-
-
-
-
-quadratic_equation(1, 2, -3)
-
-quadratic_equation(2, -7, 3)
-
-quadratic_equation(1, -12, -28)
+qod_url = 'http://jservice.io/api/category'
+qod_get = requests.get(qod_url)
+qod_reply = json.loads(qod_get.content)
+print(qod_reply)

@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 import re
-from .forms import RegexForm
+from .forms import RegexForm, GraphsForm
 import requests
 import json
 import os
 from django.conf import settings
+import base64
+from io import BytesIO
+from matplotlib.figure import Figure
+import numpy as np
 
 
 # Create your views here.
@@ -22,7 +26,6 @@ def regex_view(request, *args, **kwargs):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = RegexForm(request.POST)
-        print(form['input_text'])
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -111,37 +114,35 @@ def library_view(request, *args, **kwargs):
     context = {'short_library': short_library, 'book_text': book_text}
     return render(request, "imperial_library.html", context)
 
+
 def graphs_view(request, *args, **kwargs):
     if request.method == 'POST':
-        a = request.form['Amplitude']
-        b = request.form['Period']
-        c = request.form['Ph_shift']
-        d = request.form['Ver_shift']
-        context = {'Amplitude': a, 'Period':b, 'Ph_shift': c, 'Ver_shift':d}
-        return redirect(f'/graphs?amplitude={a}&period={b}&ph_shift={c}&ver_shift={d}')
-    else:
-        a = request.args.get('amplitude') # читаем url arguments
-        b = request.args.get('period')
-        c = request.args.get('ph_shift')
-        d = request.args.get('ver_shift')
-        a = 1 if a==None else a # значения по умолчанию, если их нет
-        b = 1 if b==None else b
-        c = 0 if c==None else c
-        d = 0 if d==None else d
-        a,b,c,d = float(a),float(b),float(c),float(d)
+        form = GraphsForm(request.POST)
+        if form.is_valid():
+            return redirect(f'/graphs?amplitude={form.cleaned_data["amplitude"]}&period={form.cleaned_data["period"]}&ph_shift={form.cleaned_data["ph_shift"]}&ver_shift={form.cleaned_data["ver_shift"]}')
+        else:
+            print("Form invalid")
 
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        a = request.GET.get('amplitude', 1)  # читаем url arguments, даем значения по умолчанию, если их нет
+        b = request.GET.get('period', 1)
+        c = request.GET.get('ph_shift', 0)
+        d = request.GET.get('ver_shift', 0)
+        a, b, c, d = float(a), float(b), float(c), float(d)
         fig = Figure()   # Generate the figure **without using pyplot**
         ax = fig.subplots()
         ax.set_xlabel("X axis")
         ax.set_ylabel("Y axis")
         ax.set_title('a sine wave')
-        x = np.arange(0, 10, 0.01)   # start,stop,step
+        x = np.arange(0, 10, 0.01)  # start,stop,step
         y = a*np.sin(b*(x+c))+d
-        ax.plot(x,y)
-        
+        ax.plot(x, y)
+        ax.grid(color = 'grey', linestyle = '--', linewidth = 0.5)
         buf = BytesIO()  # Save it to a temporary buffer.
         fig.savefig(buf, format="png")
         # Embed the result in the html output.
         data = base64.b64encode(buf.getbuffer()).decode("ascii")
-        #return f"<img src='data:image/png;base64,{data}'/>"
-        return render_template("graphs.html", data = data, a=a, b=b, c=c, d=d)
+        form = GraphsForm(auto_id=True, initial={'amplitude': a, 'period': b, 'ph_shift': c, 'ver_shift': d})
+        context = {'data': data, 'form': form}
+        return render(request, "graphs.html", context)

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>API</title>
+{% endblock %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="/chuck_norris">API</li>
+  </ol>
+</nav>
+
+<h1>Эта страница работает с API.</h1>
+<h3>Она получает факты из жизни Чака Норриса отсюда: <a href="http://www.icndb.com/">http://www.icndb.com/</a>.</h3>
+{{ text }}
+<br>
+<br>
+<form method='POST'>{% csrf_token %}
+<input type = "submit" value = "Загрузить факт!">
+</form>
+
+{% endblock %}

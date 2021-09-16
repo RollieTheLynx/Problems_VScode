@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Parsing</title>
+<style>
+  .table {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+  border: 5px solid #fff;
+  border-top: 5px solid #fff;
+  border-bottom: 3px solid #fff;
+  border-collapse: collapse; 
+  outline: 3px solid #ffd300;
+  font-size: 15px;
+  background: #fff!important;
+  }
+
+  .table th {
+  font-weight: bold;
+  padding: 5px;
+  background: #ffd300;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  border-top: 3px solid #fff;
+  border-bottom: 3px solid #ffd300;
+  }
+
+  .table td {
+  padding: 5px;
+  border: none;
+  border-top: 3px solid #fff;
+  border-bottom: 3px solid #fff;
+  font-size: 10px;
+  }
+
+  .table tbody tr:nth-child(even){
+  background: #f8f8f8!important;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="/parsing">Parsing</li>
+  </ol>
+</nav>
+
+<h1>Сюда выводятся результаты парсинга <a href="https://forecast.weather.gov/MapClick.php?lat=40.7146&lon=-74.0071#.XyMUXOdn2Uk">погоды в Нью-Йорке</a></h1>
+<br>
+
+<table class="table">
+  <tr>
+    {% for per in period %}
+      <th>{{per}}</th>
+    {% endfor%}
+  </tr>
+  <tr>
+    {% for des in descriptions %}
+      <td>{{des}}</td>
+    {% endfor%}
+  </tr>
+  <tr>
+    {% for temp in temperature %}
+      <td>{{temp}}</td>
+    {% endfor%}
+  </tr>
+</table> 
+
+{% endblock %}

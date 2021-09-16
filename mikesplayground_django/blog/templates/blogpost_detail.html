@@ -1,0 +1,16 @@
+{% include 'base.html' %}
+<!-- extends 'base.html' не работает, т.к. берем страницу из другого приложения -->
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+<p>{% if object.content != None and object.content != "" %}
+        {{object.content}}
+    {% else %}
+        Coming soon
+    {%endif%}</p>
+<p>{{object.author}}</p>
+<p>{{object.date}}</p>
+
+<p><a href="{{request.build_absolute_uri}}edit">Редактировать</a></p>
+<p><a href="{{request.build_absolute_uri}}delete">Удалить</a></p>
+{% endblock %}

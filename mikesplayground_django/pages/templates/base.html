@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block head %} {% endblock %}
+  {% load static %}
+  <link rel="shortcut icon" href="{% static '/pages/favicon-64x64.png' %}">
+  <link rel="stylesheet" href = "{% static 'pages/css/main.css' %}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body class="mx-auto"> <!-- bootstrap's centering https://getbootstrap.com/docs/5.0/utilities/spacing/#horizontal-centering -->
+  <div class="mynavbar">
+    <a href="/">Home</a>
+    <a href="/lightbox">Gallery</a>
+    <div class="mydropdown">
+      <button class="dropbtn">Experiments
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="mydropdown-content">
+        <a href="/posts">Database</a>
+        <a href="/regex">Regex</a>
+        <a href="/socials">Social Networks integration</a>
+        <a href="/chuck_norris">API</a>
+        <a href="/parsing">Parsing</a>
+        <a href="/css">CSS</a>
+        <a href="/graphs">Graphs</a>
+        <a href="/imperial_library">Imperial Library</a>
+        <div class="dropdown-divider"></div>
+        <a href="/estonia">Estonia 2018</a>
+        <a href="/germany">Germany 2019</a>
+        <a href="/russia">Russia 2021</a>
+      </div>
+    </div>
+    <div class="mydropdown">
+      <button class="dropbtn">Tours
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="mydropdown-content">
+        <a href="/estonia">Estonia 2018</a>
+        <a href="/germany">Germany 2019</a>
+        <a href="/russia">Russia 2021</a>
+      </div>
+    </div>
+  </div> 
+
+
+  {% block body %} {% endblock %}
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

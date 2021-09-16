@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Imperial Library</title>
+<script>
+  // https://www.w3schools.com/howto/howto_js_cascading_dropdown.asp
+  // var subjectObject = {
+  //   "Front-end": {
+  //       "HTML": ["Links", "Images", "Tables", "Lists"],
+  //       "CSS": ["Borders", "Margins", "Backgrounds", "Float"],
+  //       "JavaScript": ["Variables", "Operators", "Functions", "Conditions"]
+  //   },
+  //   "Back-end": {
+  //       "PHP": ["Variables", "Strings", "Arrays"],
+  //       "SQL": ["SELECT", "UPDATE", "DELETE"]
+  //   }
+  //   }
+  // console.log(subjectObject);
+  {% autoescape off %}
+    var subjectObject = {{ short_library}};
+  {% endautoescape %}
+  window.onload = function() {
+  var gameSel = document.getElementById("game");
+  var bookSel = document.getElementById("book");
+   for (var x in subjectObject) {
+    gameSel.options[gameSel.options.length] = new Option(x, x);  //https://www.w3schools.com/jsref/coll_select_options.asp - смотрим элементы/игры в subjectObject и заполняем опции в спике игр
+  }
+  gameSel.onchange = function() {
+    //empty book dropdown
+    bookSel.length = 1;
+    //display correct values
+    for (var y in subjectObject[this.value]) {
+      bookSel.options[bookSel.options.length] = new Option(y, y);
+    }
+  }
+} 
+</script>
+{% endblock %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="/imperial_library">Imperial Library</li>
+    </ol>
+  </nav>
+<h1>Библиотека книг Elder Scrolls</h1>
+<h3>На основе датасета от Human Media Interaction Group <a href="https://github.com/hmi-utwente/video-game-text-corpora">https://github.com/hmi-utwente/video-game-text-corpora</a></h3>
+<br>
+  <form name="form1" id="form1" action="/imperial_library">
+    Games: <select name="game" id="game">
+      <option value="" selected="selected">Select game</option>
+    </select>
+    <br><br>
+    Books: <select name="book" id="book">
+      <option value="" selected="selected">Please select game first</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form> 
+  <br>
+  {{book_text}}
+<br>
+<br>
+{% endblock %}
+
+

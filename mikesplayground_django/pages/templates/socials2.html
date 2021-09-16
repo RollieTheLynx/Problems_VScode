@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Social Networks - выгрузка статистики</title>
+{% endblock %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="/socials2">Socials</li>
+    </ol>
+  </nav>
+  
+<h1>Вы администрируете группы с такими показателями за период Jan 01 2021 03:00:00 - Mar 11 2021 12:48:24:</h1>
+<br>
+
+{% for group in groups_database %}
+<h2>Название: {{ groups_database[group]["Groupname"] }}</h2>
+<p>Лайков: {{ groups_database[group]["group_likes"] }}</p>
+<p>Репостов: {{ groups_database[group]["group_reposts"] }}</p>
+<p>Участников: {{ groups_database[group]["group_members"] }}</p>
+<hr>
+{% endfor%}
+
+{% endblock %}

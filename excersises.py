@@ -2,10 +2,7 @@
 """
 
 """
-import json
-import requests
+def test(a=1, b=3):
+    return print(a+b)
 
-qod_url = 'http://jservice.io/api/category'
-qod_get = requests.get(qod_url)
-qod_reply = json.loads(qod_get.content)
-print(qod_reply)
+test(78, 77)

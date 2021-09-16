@@ -1,0 +1,8 @@
+{% include 'base.html' %}
+{% block content %}
+<form action='.' method="POST">{% csrf_token %}
+    <!-- . = название экшна как текущий урл, здесь - create -->
+    {{ form.as_p}}
+    <input type ='submit' value='Save'/>
+</form>
+{% endblock %}

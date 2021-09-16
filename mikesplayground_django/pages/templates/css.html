@@ -1,0 +1,226 @@
+﻿{% extends 'base.html' %}
+
+{% block head %}
+  <title>CSS</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+  <style>
+  h1 {
+    color: green;
+    text-align: center;
+    text-decoration: underline;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    word-spacing: 10px;
+    text-shadow: 2px 2px 5px red;
+    }
+    
+        body { 
+    color: blue;
+    }
+    
+    div.intro {
+    color: green;
+    text-align: center;
+    font-weight: lighter; /* Светлое начертание */ 
+    font-family: Verdana;
+    opacity: 0.8; /* Прозрачность всего элемента - текста и фона */ 
+    /* This is
+    a multi-line
+    comment */ 
+    }
+    
+    p.center {
+    text-align: center;
+    }
+    
+    p.large {
+    font-size: 150% /* Размер текста */ 
+    }
+    
+    .className {
+    color: cyan;
+    }
+    
+    #IDName {
+    color: orange;
+    font-family: "Sofia";
+    font-size: 22px;
+    text-align: center;
+    }
+    
+    a:link {
+      color: red;
+    }
+    
+    /* visited link */
+    a:visited {
+      color: green;
+    }
+    
+    /* mouse over link */
+    a:hover {
+      color: hotpink;
+      background-color: lightgreen;
+    }
+    
+    /* selected link */
+    a:active {
+      color: blue;
+    }
+    
+    a.but:link, a.but:visited {
+      background-color: #f44336;
+      color: white;
+      padding: 14px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    a.but:hover, a.but:active {
+      background-color: red;
+    }
+    
+    /* Lists */
+    
+    ul.a {
+      list-style-type: circle;
+    }
+    
+    ul.b {
+      list-style-type: square;
+    }
+    
+    ol.c {
+      list-style-type: upper-roman;
+    }
+    
+    ol.d {
+      list-style-type: lower-alpha;
+    }
+    
+    /* Animation */
+    
+    div.infinite_animation {
+      width: 100px;
+      height: 100px;
+      background-color: red;
+      position: relative;
+      animation-name: example;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
+    
+    @keyframes example {
+      0%   {background-color:red; left:0px; top:0px;}
+      25%  {background-color:yellow; left:200px; top:0px;}
+      50%  {background-color:blue; left:200px; top:200px;}
+      75%  {background-color:green; left:0px; top:200px;}
+      100% {background-color:red; left:0px; top:0px;}
+    }
+    
+    /* Tooltip container */
+    .toooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+    }
+    
+    /* Tooltip text */
+    .toooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+     
+      /* Position the tooltip text - see examples below! */
+      position: absolute;
+      z-index: 1;
+    }
+    
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .toooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+  </style>
+
+{% endblock %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="/css">CSS</li>
+  </ol>
+</nav>
+
+<div id="IDName">Page with the best design ever!</div>
+
+<p class="center large">This paragraph refers to two classes.</p> 
+
+<div class="className">Class Test</div>
+
+<div class="toooltip">
+<p style="color:DodgerBlue;">Hover over me...</p>   <!-- This is inline style -->
+<span class="tooltiptext">Useful tooltip</span>
+</div>
+<br> 
+
+<a href="http://lib.ru/FOUNDATION/cchute.txt">This is a link</a>
+<br>
+
+<a class= "but" href="http://lib.ru/FOUNDATION/cchute.txt">This is a button link</a>
+
+<p>Example of unordered lists:</p>
+<ul class="a">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Coca Cola</li>
+</ul>
+
+<ul class="b">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Coca Cola</li>
+</ul>
+
+<p>Example of ordered lists:</p>
+<ol class="c">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Coca Cola</li>
+</ol>
+
+<ol class="d">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Coca Cola</li>
+</ol>
+
+<p style="border:2px solid rgba(255, 99, 71, 0.5); border-radius: 5px; padding-top: 50px; padding-right: 30px; padding-bottom: 50px;
+padding-left: 80px; outline-style: dotted; outline-color:cyan;">{% lorem 5 b %}</p> <!-- 50% transparent border -->
+
+<div class="infinite_animation"></div>
+
+<h1>Айзек Азимов. С-шлюз</h1>
+
+<div class="intro">
+
+    ---------------------------------------------------------------
+         Isaac Asimov. "C-Chute", 1951
+         Перевод В. Гольдеса, И. Оганесовой
+         OCR: Владимир Весленко
+    ---------------------------------------------------------------
+</div>
+<hr>
+<br>
+<div class = "maintext">
+     В каюту, куда поместили полковника Энтони Уиндема и других пассажиров, проникал шум боя. На некоторое время наступила тишина, корабль замер, а это означало, что противники сражаются - находясь на астрономическом расстоянии друг от друга, нанося мощные удары, отражаемые защитными силовыми полями. <br>   Никто не сомневался в том, каким будет конец. Земной корабль был всего лишь торговым судном, на которое спешно поставили вооружение, а прежде чем члены команды выгнали пассажиров с палубы, полковник успел заметить, что их атакует легкий крейсер клоро. <br>   Прошло меньше получаса, и начались короткие, но ощутимые толчки, которых он ждал. Пассажиров болтало из стороны в сторону, когда корабль пытался маневрировать, словно океанский лайнер, попавший в шторм. Однако космос был спокойным и безмолвным. Просто пилот изо всех сил старался избежать прямого попадания, из чего следовало, что защитные экраны не выдержали перегрузок. <br>   Полковник Уиндем опирался на свою алюминиевую палку и думал о том, что, хоть он и провел всю свою жизнь в народном ополчении, ему так и не довелось принять участия ни в одном сражении; и сейчас наконец-то, став толстым и хромым стариком, он оказался в самом сердце боевых действий - командир, у которого в подчинении нет ни одного солдата. <br>   Очень скоро гнусные чудовища - клоро - ступят на борт корабля. Такова их манера вести бой. Им, конечно, ужасно мешают космические скафандры, и они понесут большие потери, зато получат корабль землян. Уиндем подумал о пассажирах, и на мгновение в мозгу промелькнуло: "Если бы они были вооружены, а я мог встать во главе нашей маленькой армии..." <br>   Он быстро отбросил эту бесполезную мысль. Портер явно перепуган до смерти, да и юноша Лебланк не в лучшем состоянии. Братья Полиоркеты - проклятье, он даже не может отличить одного от другого - устроились в уголке и, не обращая никакого внимания на остальных, тихо себе разговаривают. Вот Мален - совсем другое дело: сидит совершенно прямо и, похоже, ничего не боится, его лицо вообще лишено каких бы то ни было эмоций. Впрочем, человеку ростом в пять футов вряд ли когда-нибудь доводилось держать в руках оружие... <br>   Совершенно бессмысленные размышления - какая польза от таких вояк! <br>   А вот еще Стюарт - насмешливая улыбочка и сарказм, которым пронизаны все его заявления... Уиндем искоса посмотрел на Стюарта тот приглаживал своими неестественно белыми руками песочные волосы. Что толку от его искусственных рук? <br>   Полковник почувствовал, как содрогнулся корабль - с ним состыковалось другое космическое судно. Через пять минут из коридора донесся шум сражения. Один из братьев Полиоркетов что-то крикнул и метнулся к двери. Другой позвал его: <br>   – Аристид! Подожди! - И бросился следом. <br>   
+</div>
+{% endblock %}

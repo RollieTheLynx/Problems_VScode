@@ -14,11 +14,14 @@
 
 <h1>Эта страница работает с API.</h1>
 <h3>Она получает факты из жизни Чака Норриса отсюда: <a href="http://www.icndb.com/">http://www.icndb.com/</a>.</h3>
-{{ text }}
+<p>{{ joke_text }}</p>
 <br>
 <br>
 <form method='POST'>{% csrf_token %}
 <input type = "submit" value = "Загрузить факт!">
 </form>
+<br>
+<p>EUR rate: {{ euro_rate }}</p>
+<p>USD rate: {{ usd_rate }}</p>
 
 {% endblock %}

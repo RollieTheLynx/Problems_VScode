@@ -12,12 +12,6 @@ def database_view(request, *args, **kwargs):
     return render(request, "imperial_library.html", context)
 
 
-def blogpost_detail_view(request):
-    obj = BlogPost.objects.get(id=1)
-    context = {'object': obj}
-    return render(request, "blogpost_detail.html", context)
-
-
 def blogpost_list_view(request):
     queryset = BlogPost.objects.all()
     context = {"object_list": queryset}
@@ -65,7 +59,7 @@ def blogpost_create_view(request):
         form = BlogPostForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('../')   
+            return redirect('../')
         else:
             print("Form invalid")
     else:

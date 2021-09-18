@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from pages.views import home_view, css_view, regex_view, chuck_view, estonia_view, germany_view, russia_view, library_view, graphs_view
-from blog.views import blogpost_detail_view, blogpost_list_view, dynamic_lookup_view, blogpost_delete_view, blogpost_create_view, blogpost_edit_view
+from pages.views import home_view, css_view, regex_view, chuck_view, estonia_view, germany_view, russia_view, library_view, graphs_view, parsing_view, lightbox_view
+from blog.views import blogpost_list_view, dynamic_lookup_view, blogpost_delete_view, blogpost_create_view, blogpost_edit_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,14 +30,14 @@ urlpatterns = [
     path('database/<int:id>/edit/', blogpost_edit_view, name="blogpost-edit"),
     path('blogpost_list/', blogpost_list_view, name="blogpost-list"),
     path('regex/', regex_view, name="regex"),
-    # path('lightbox', lightbox_view, name="lightbox"),
+    path('lightbox', lightbox_view, name="lightbox"),
     # path('socials', socials_view, name="socials"),
     path('chuck_norris/', chuck_view, name="chuck"),
-    # path('parsing', parsing_view, name="parsing"),
+    path('parsing', parsing_view, name="parsing"),
     path('css/', css_view, name="css"),
     path('graphs/', graphs_view, name="graphs"),
     path('estonia/', estonia_view, name="estonia"),
     path('germany/', germany_view, name="germany"),
     path('russia/', russia_view, name="russia"),
-    path('imperial_library', library_view, name="imperial_library")
-]
+    path('imperial_library', library_view, name="imperial_library"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

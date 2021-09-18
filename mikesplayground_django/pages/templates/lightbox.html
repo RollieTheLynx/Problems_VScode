@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block head %}
 <title>Lightbox</title>
@@ -69,17 +70,17 @@
 </nav>
 
 <div class="thumb">
-{% for image in images %}
-  <a href="#{{image}}">
-    <img src="static/images/{{image}}">
+  {% for image in file_names %}
+    <a href="#{{image.photo.url}}">
+      <img src="{{image.photo.url}}">
+    </a>
+  {% endfor%}
+  </div>
+  
+  {% for image in file_names %}
+  <a href="#close" class="lightbox" id="{{image.photo.url}}">
+    <img src="{{image.photo.url}}">
   </a>
-{% endfor%}
-</div>
-
-{% for image in images %}
-<a href="#close" class="lightbox" id="{{image}}">
-  <img src="../static/images/{{image}}">
-</a>
-{% endfor%}
+  {% endfor%}
 
 {% endblock %}

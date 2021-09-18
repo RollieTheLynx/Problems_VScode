@@ -5,10 +5,14 @@ import requests
 import json
 import os
 from django.conf import settings
+from django.conf.urls.static import static
 import base64
 from io import BytesIO
 from matplotlib.figure import Figure
 import numpy as np
+from bs4 import BeautifulSoup
+from .models import ApiExchange, CatPhoto
+from datetime import date
 
 
 # Create your views here.
@@ -39,16 +43,38 @@ def regex_view(request, *args, **kwargs):
 
 
 def chuck_view(request, *args, **kwargs):
+    # ищем курсы валют на сегодняшнюю дату в БД
+    try:
+        today_date = date.today()
+        db_search = ApiExchange.objects.get(date=today_date)
+        euro_rate = getattr(db_search, 'rate_eur_rur')
+        usd_rate = getattr(db_search, 'rate_usd_rur')
+
+    # если в БД не нашли:
+    except ApiExchange.DoesNotExist:
+        try:
+            # https://exchangerate.host/#/#docs
+            currency_request = requests.get("https://api.exchangerate.host/latest?base=rub")
+            currency_reply = json.loads(currency_request.content)
+            euro_rate = 1/currency_reply['rates']['EUR']
+            usd_rate = 1/currency_reply['rates']['USD']
+            ApiExchange.objects.create(date=today_date, rate_eur_rur=euro_rate, rate_usd_rur=usd_rate)
+        except Exception:
+            euro_rate = "Error..."
+            usd_rate = "Error..."
+
     if request.method == 'POST':
         try:
             api_request = requests.get("http://api.icndb.com/jokes/random")
             joke = json.loads(api_request.content)
+            joke_text = joke["value"]["joke"]
         except Exception:
-            joke = "Error..."
-        return render(request, 'chuck_norris.html',
-                      {'text': joke["value"]["joke"]})
+            joke_text = "Error..."
+        context = {'joke_text': joke_text, 'euro_rate': euro_rate, 'usd_rate': usd_rate}
+        return render(request, 'chuck_norris.html', context)
     else:
-        return render(request, 'chuck_norris.html', {'text': ""})
+        context = {'joke_text': '', 'euro_rate': euro_rate, 'usd_rate': usd_rate}
+        return render(request, 'chuck_norris.html', context)
 
 
 def estonia_view(request, *args, **kwargs):
@@ -146,3 +172,33 @@ def graphs_view(request, *args, **kwargs):
         form = GraphsForm(auto_id=True, initial={'amplitude': a, 'period': b, 'ph_shift': c, 'ver_shift': d})
         context = {'data': data, 'form': form}
         return render(request, "graphs.html", context)
+
+def parsing_view(request, *args, **kwargs):
+    page = "https://forecast.weather.gov/MapClick.php?lat=40.7146&lon=-74.0071#.XyMUXOdn2Uk"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(page, headers = headers)
+    soup = BeautifulSoup(response.content, "html.parser")
+    week = soup.find(id = "seven-day-forecast-body")
+    items = week.find_all(class_ = "tombstone-container")
+    items[0].find(class_ = "period-name").get_text()
+    items[0].find(class_ = "short-desc").get_text()
+    items[0].find(class_ = "temp").get_text()
+    period_names = [item.find(class_ = "period-name").get_text() for item in items]
+    short_descriptions = [item.find(class_ = "short-desc").get_text() for item in items]
+    temperatures = [item.find(class_ = "temp").get_text() for item in items]
+    context = {'period': period_names,
+               'descriptions': short_descriptions,
+               'temperature': temperatures}
+    return render(request, 'parsing.html', context)
+
+
+def lightbox_view(request, *args, **kwargs):
+    # images = ['1.jpg', '14117813373971.jpg', '14275277146801.jpg', '1435691453414.jpg', '1435692082209.jpg', '1435692148733.jpg', '1435694078613.jpg', '14662200939630.jpg', '14662208180752.jpg', '1589711817049.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '90.jpg', '91.jpg', 'a7c49da7gw1ey0x52qkjqj20c80c8jsb.jpg', 'a7c49da7gw1ey0x539760j20c80c80tu.jpg', 'a7c49da7jw1ejsrjhl7fpj20c80923zg.jpg', 'a7c49da7jw1ejsrjq4cr7j20c80lfjsf.jpg', 'a7c49da7jw1ejsrjunmgfj20c80960t9.jpg', 'a7c49da7jw1ejsrjwrzpij20c8096wfk.jpg', 'jellybeans.jpg', 'z1352737299038.jpg']
+    # for image in images:
+    #     CatPhoto.objects.create(photo='cat_photos/'+image)
+    # # потом вручную положить фото в C:\Users\Rollie\Documents\Python_Scripts\Problems_VScode\mikesplayground_django\media\cat_photos
+
+
+    all_photos = CatPhoto.objects.all()
+    context = {'file_names': all_photos}
+    return render(request, "lightbox.html", context)

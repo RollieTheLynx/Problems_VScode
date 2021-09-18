@@ -197,8 +197,6 @@ def lightbox_view(request, *args, **kwargs):
     # for image in images:
     #     CatPhoto.objects.create(photo='cat_photos/'+image)
     # # потом вручную положить фото в C:\Users\Rollie\Documents\Python_Scripts\Problems_VScode\mikesplayground_django\media\cat_photos
-
-
     all_photos = CatPhoto.objects.all()
     context = {'file_names': all_photos}
     return render(request, "lightbox.html", context)

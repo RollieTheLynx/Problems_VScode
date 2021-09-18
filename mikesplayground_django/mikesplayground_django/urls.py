@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from pages.views import home_view, css_view, regex_view, chuck_view, estonia_view, germany_view, russia_view, library_view, graphs_view, parsing_view, lightbox_view
 from blog.views import blogpost_list_view, dynamic_lookup_view, blogpost_delete_view, blogpost_create_view, blogpost_edit_view
+from vk_api.views import socials_view, socials_view2
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -31,7 +32,8 @@ urlpatterns = [
     path('blogpost_list/', blogpost_list_view, name="blogpost-list"),
     path('regex/', regex_view, name="regex"),
     path('lightbox', lightbox_view, name="lightbox"),
-    # path('socials', socials_view, name="socials"),
+    path('socials', socials_view, name="socials"),
+    path('socials2', socials_view2, name="socials2"),
     path('chuck_norris/', chuck_view, name="chuck"),
     path('parsing', parsing_view, name="parsing"),
     path('css/', css_view, name="css"),

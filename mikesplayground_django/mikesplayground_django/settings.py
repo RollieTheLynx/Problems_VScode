@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pages',
     'blog',
+    'vk_api',
     'django_user_agents',
 ]
 

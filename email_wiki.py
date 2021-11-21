@@ -27,9 +27,9 @@ def get_wiki():
     soup = BeautifulSoup(response.text, 'lxml')
     title = soup.find('h2', class_='main-header main-box-header').text.strip()
     text = soup.find('div', id='main-tfa').findChildren("p", recursive=False)
-    text = ''.join([str(item) for item in text]) # соединяем все <p>
-    # .text.strip() - для каждого <p>
-    return title, text
+    image = soup.find('img')['src']
+    return title, text, image
+
 
 def attach_file(msg, filepath):                             # Функция по добавлению конкретного файла к сообщению
     filename = os.path.basename(filepath)                   # Получаем только имя файла
@@ -67,7 +67,8 @@ def process_attachement(msg, files):                        # Функция п�
             for file in dir:                                # Перебираем все файлы и...
                 attach_file(msg,f+"/"+file)                 # ...добавляем каждый файл к сообщению
 
-def send_mail(title, text):
+def send_mail(title, text, image):
+    text = ''.join([str(item) for item in text]) # соединяем все <p>
     addr_from, password = my_keys.mailru()
     addr_to = "rolliethelynx@gmail.com"
     
@@ -87,6 +88,7 @@ def send_mail(title, text):
             {title}
         </h1>
         <br>
+            <img src='https:{image}'>
             {text}
     </body>
     </html>
@@ -106,8 +108,8 @@ def send_mail(title, text):
 
 
 def main():
-    title, text = get_wiki()
-    send_mail(title, text)
+    title, text, image = get_wiki()
+    send_mail(title, text, image)
 
 
 if __name__ == "__main__":

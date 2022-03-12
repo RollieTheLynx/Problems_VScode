@@ -18,16 +18,16 @@ for table in tables[1:9]:
 
     for row in rows[1:]:
         cell = row.find_all('td')
-        dict1 = {'Gdex': cell[0].get_text().strip(), # исправить - в каждом поколении это название своё
-                 'Ndex': cell[1].get_text().strip(),
-                 'Pokémon': cell[2].get_text().strip(),
-                 'Type': [el.get_text().strip() for el in cell[3:]],
-                 'link': row.find('a')['href'],
-                 'image': row.find('img')['src']}
+        dict1 = {heads[0]: cell[0].get_text().strip(),
+                 heads[1]: cell[1].get_text().strip(),
+                 heads[3]: cell[2].get_text().strip(),
+                 heads[4]: ', '.join([el.get_text().strip() for el in cell[3:]]),
+                 'link': 'https://bulbapedia.bulbagarden.net' + row.find('a')['href'],
+                 'image': 'https:' + row.find('img')['src']}
         rows_list.append(dict1)
 
     df = pandas.DataFrame(rows_list)
     df.to_excel(writer, index=False, sheet_name=f' Generation {generation_counter}')
-    print(generation_counter)
 
 writer.save()
+

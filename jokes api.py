@@ -14,4 +14,3 @@ try:
 except Exception:
     joke = "Error..."
 print(joke["value"]["joke"])
-

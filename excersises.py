@@ -1,6 +1,8 @@
-n = str(5245)
-sum = 0
-for x in n:
-    sum += int(x)
-
-print(sum)
+    soup = fetch(link)
+    company = soup.find('div', class_='company center').find('div', class_='title')
+    name = soup.find('h1', itemprop="name")
+    price = soup.find('div', class_="value pointer").find('span')
+    ZhK = soup.find('div', class_="complex")
+    floor = soup.find('div', class_="floor").find('span', class_="value")
+    rooms = soup.find('div', class_="rooms").find('span', class_="value")
+    area = soup.find('div', class_="square").find('span', class_="value")

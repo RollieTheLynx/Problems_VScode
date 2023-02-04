@@ -8,14 +8,10 @@ import discord  # Подключаем библиотеку
 from discord.ext import commands
 import requests
 import json
+from my_keys import discord_config
 
 #  вынести в отдельный файл config
-settings = {
-    'token': 'MTA3MTQxMDQ5NzUxNTE3MTk1MA.GaNFO6.DEHni2HPqrJlGn4O0yaCpzxF6Eyo7PHjBMp-ps',
-    'bot': "Inerri's Testbot",
-    'id': 1071410497515171950,
-    'prefix': '>'
-}
+settings = discord_config
 
 intents = discord.Intents.default()  # Подключаем "Разрешения"
 intents.message_content = True

@@ -9,8 +9,8 @@ import json
 import requests
 
 try:
-    api_request = requests.get("http://api.icndb.com/jokes/random")
+    api_request = requests.get("https://api.chucknorris.io/jokes/random")
     joke = json.loads(api_request.content)
 except Exception:
     joke = "Error..."
-print(joke["value"]["joke"])
+print(joke["value"])

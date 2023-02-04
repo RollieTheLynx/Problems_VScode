@@ -9,7 +9,6 @@ from datetime import datetime
 from os.path import exists
 import pandas as pd
 from bs4 import BeautifulSoup
-import time
 import random
 
 
@@ -24,7 +23,16 @@ def get_pages():
 
     else:
         url = 'https://turk.estate/sitemap.xml'
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"}
+        user_agent_list = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
+        'Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363',
+        ]
+        headers = {"User-Agent": random.choice(user_agent_list)}
+
         response = requests.get(url, headers=headers)
 
         with open(f'turkestate {current_date}.xml', 'wb') as f:
@@ -42,7 +50,15 @@ def get_pages():
 
 
 def fetch(page):
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"}
+    user_agent_list = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
+        'Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36 Edg/87.0.664.75',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363',
+        ]
+    headers = {"User-Agent": random.choice(user_agent_list)}
     result = requests.get(page, headers=headers)
     if result.status_code == 404:
         return 404
@@ -105,6 +121,17 @@ def parse_page(link):
     return result
 
 
+def save_batch(data):
+        if len(data) > 0:
+            new_df = pd.DataFrame(data)
+            new_df.set_index('id', inplace=True)
+            new_df = df1.append(new_df)
+            print('Saving Excel...')
+            with pd.ExcelWriter(path) as writer:
+                new_df.to_excel(writer, sheet_name=f'{current_date}', index=True)
+
+
+
 # all_pages = ['https://turk.estate/real-estate/o50121/o51945/',
 #               'https://turk.estate/real-estate/o430/',
 #               'https://turk.estate/real-estate/o3016/',
@@ -128,24 +155,22 @@ else:
 data = []
 counter = 0
 
-for link in all_pages[0:105]:  # TODO снять ограничение
+for link in all_pages:
     counter += 1
     id = link.split('/')[-2][1:]
     if 'real-estate/o' in link and '/q' not in link:
         if id not in df1.index:  #  and df1.loc[[id]]['name'] != 404
             print(f'Parsing object {counter} of {len(all_pages)}: {link}')
-            #  time.sleep(random.uniform(0.3, 2.9))
             try:
                 data.append(parse_page(link))
             except:
                 print(f"Error at {link}!")
-                pass
+        else:
+            print(f'Object {id} is already downloaded, skipping')
+    # сохраняем каждые 100 объектов и в конце
+    if (counter % 100 == 0) or (counter == len(all_pages)):
+        save_batch(data)
 
-new_df = pd.DataFrame(data)
-new_df.set_index('id', inplace=True)
-new_df = df1.append(new_df)
-with pd.ExcelWriter(path) as writer:
-    new_df.to_excel(writer, sheet_name=f'{current_date}', index=True)
 
-# сохранять, какие страницы уже не в продаже
-# не парсить 404
+# TODO не парсить какие уже не в продаже
+# TODO не парсить 404

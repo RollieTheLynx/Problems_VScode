@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*-
+"""
+https://habr.com/ru/post/676390/
+https://habr.com/ru/post/511454/
+
+"""
+import discord  # Подключаем библиотеку
+from discord.ext import commands
+import requests
+import json
+
+#  вынести в отдельный файл config
+settings = {
+    'token': 'MTA3MTQxMDQ5NzUxNTE3MTk1MA.GaNFO6.DEHni2HPqrJlGn4O0yaCpzxF6Eyo7PHjBMp-ps',
+    'bot': "Inerri's Testbot",
+    'id': 1071410497515171950,
+    'prefix': '>'
+}
+
+intents = discord.Intents.default()  # Подключаем "Разрешения"
+intents.message_content = True
+# Задаём префикс и интенты
+bot = commands.Bot(command_prefix=settings['prefix'], intents=intents)
+
+
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'{client.user} has connected to Discord!')
+
+
+# С помощью декоратора создаём первую команду
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
+
+@bot.command()
+async def repeat(ctx, arg):
+    await ctx.send(arg)
+
+@bot.command()
+async def hello(ctx):  # Создаём функцию и передаём аргумент ctx.
+    author = ctx.message.author  # Объявляем переменную author и записываем туда информацию об авторе.
+
+    await ctx.send(f'Hello, {author.mention}!')  # Выводим сообщение с упоминанием автора, обращаясь к переменной author.
+
+@bot.command()
+async def cat(ctx):
+    response = requests.get('https://some-random-api.ml/img/cat')  # Get-запрос
+    json_data = json.loads(response.text)  # Извлекаем JSON
+
+    embed = discord.Embed(color = 0xff9900, title='Random Cat')  # Создание Embed'a
+    embed.set_image(url=json_data['link'])  # Устанавливаем картинку Embed'a
+    await ctx.send(embed=embed)  # Отправляем Embed
+
+@bot.command()
+async def chuck(ctx):
+    api_request = requests.get("https://api.chucknorris.io/jokes/random")
+    joke = json.loads(api_request.content)
+    await ctx.send(joke["value"])
+
+
+bot.run(settings['token'])

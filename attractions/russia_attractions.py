@@ -15,13 +15,13 @@ myMap = folium.Map(location=[55.796391, 49.108891], tiles="OpenStreetMap",  zoom
 
 for ind in df.index:
     # re.findall(r"'(.*?)'", df['geolocation'][7]) - list of coords in quotes
-    print(df['name'][ind])
-    print(float(re.findall(r"'(.*?)'", df['geolocation'][ind])[0]))
-    print(float(re.findall(r"'(.*?)'", df['geolocation'][ind])[1]))
+    # print(df['name'][ind])
+    # print(float(re.findall(r"'(.*?)'", df['geolocation'][ind])[0]))
+    # print(float(re.findall(r"'(.*?)'", df['geolocation'][ind])[1]))
 
     folium.Marker(location=[float(re.findall(r"'(.*?)'", df['geolocation'][ind])[1]), float(re.findall(r"'(.*?)'", df['geolocation'][ind])[0])],
                     tooltip=df['name'][ind],
                     popup=df['name'][ind],
                     icon=folium.Icon(color='darkblue', icon_color = 'white', icon='image', prefix='fa')).add_to(myMap)  # https://fontawesome.com/icons/image
 
-myMap.save("attractions.html")
+myMap.save("attractions\\attractions.html")

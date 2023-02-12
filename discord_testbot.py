@@ -21,10 +21,10 @@ bot = commands.Bot(command_prefix=settings['prefix'], intents=intents)
 
 client = discord.Client(intents=intents)
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
-
+    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    print('------')
 
 # С помощью декоратора создаём первую команду
 @bot.command()
@@ -40,6 +40,11 @@ async def hello(ctx):  # Создаём функцию и передаём ар�
     author = ctx.message.author  # Объявляем переменную author и записываем туда информацию об авторе.
 
     await ctx.send(f'Hello, {author.mention}!')  # Выводим сообщение с упоминанием автора, обращаясь к переменной author.
+
+@bot.command()
+async def add(ctx, left: int, right: int):
+    """Adds two numbers together."""
+    await ctx.send(left + right)
 
 @bot.command()
 async def cat(ctx):

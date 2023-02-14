@@ -8,17 +8,19 @@ Created on Fri May  8 15:01:06 2020
 #class
 class Person:
     #constructor method: this class has these attributes:
-    def __init__(self, height, weight):
+    def __init__(self, name, height, weight):
         #attributes
+        self.name = name
         self.height = height
         self.weight = weight
     
     #methods
     def talk(self):
-        print(f"I am {John}. My weight is {self.weight}")
+        print(f"I am {self.name}. My weight is {self.weight}")
     def kick(self):
         print("kick action")
         
   #Object / instance of class      
-John = Person(100,10)
+John = Person('John',100,10)
 John.talk()
+John.kick()

@@ -1,0 +1,8 @@
+ollama run deepseek-r1:14b
+deepseek-coder-v2
+
+
+https://dev.to/dwtoledo/how-to-use-deepseek-r1-for-free-in-visual-studio-code-with-cline-or-roo-code-3an9
+Cline extenstion in VS Code
+API Key
+API Provider: ollamaBase URL: http://localhost:11434

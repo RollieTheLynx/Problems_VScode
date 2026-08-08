@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 https://github.com/ollama/ollama-python
-
+ollama run gemma4:26b-a4b-it-q8_0
+ollama run qwen2.5-coder:14b
 
 """
-
 from ollama import chat
-from ollama import ChatResponse
 
-response: ChatResponse = chat(model='deepseek-r1:14b', messages=[
-  {
-    'role': 'user',
-    'content': 'Explain in one paragraph why hunters are the worst class in WoTLK',
-  },
-])
-# print(response['message']['content'])
-# # or access fields directly from the response object
+response = chat(
+    model='gemma4:26b-a4b-it-q8_0',
+    messages=[{'role': 'user', 'content': 'Explain how to cook pancakes'}],
+)
 print(response.message.content)

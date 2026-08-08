@@ -1,21 +1,7 @@
-def twoSum(nums, target: int):
-    for n in nums:
-        for m in nums:
-            if n + m == target:
-                return nums.index(n), nums.index(m)
+campaign_name = "LatAm ENG Search New"
 
+# Your original (incorrect) code:
+print(('US' or 'LatAm') in campaign_name)  # False - because it's checking if 'US' is in "LatAm ENG Search New"
 
-nums = [2,7,11,15]
-target = 9
-n, m = twoSum(nums, target)
-print (n , m)
-
-nums = [3,2,4]
-target = 6
-n, m = twoSum(nums, target)
-print (n , m)
-
-nums = [3,3]
-target = 6
-n, m = twoSum(nums, target)
-print (n , m)
+# Correct code:
+print('US' in campaign_name or 'LatAm' in campaign_name)  # True - correctly finds 'LatAm'
